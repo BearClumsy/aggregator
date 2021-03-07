@@ -8,8 +8,16 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
         </processorPath>
-        <module name="scanner.main" />
+        <module name="portal.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="portal-ui" target="11" />
+      <module name="portal-ui.main" target="11" />
+      <module name="portal-ui.test" target="11" />
+      <module name="portal.portal-ui" target="11" />
+      <module name="portal.portal-ui.main" target="11" />
+      <module name="portal.portal-ui.test" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
