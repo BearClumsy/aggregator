@@ -1,0 +1,13 @@
+<div fxLayoutGap="20px" (click)="onCancel()">
+  <div class="modal-header" fxLayout="column" fxLayoutAlign="center center" >
+    <div>About Application</div>
+  </div>
+  <mat-divider></mat-divider>
+  <br>
+  <div class="modal-content" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
+    <div>Author: {{this.author}}</div>
+    <div>Name: {{this.name}}</div>
+    <div>Version: {{this.version}}</div>
+    <div>Build date: {{this.buildDate | date: 'medium'}}</div>
+  </div>
+</div>

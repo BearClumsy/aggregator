@@ -1,0 +1,51 @@
+<mat-toolbar color="primary">
+  <div class="flex-container" fxLayout="row" fxFlexFill fxLayoutAlign="center center">
+    <div fxFlex>
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <div *ngIf="isAuthenticated()">
+          <button mat-mini-fab color="primary" matTooltip="Menu"
+                  (click)="toggleOverlay(drawer.toggle())">
+            <mat-icon>apps</mat-icon>
+          </button>
+          <span style="margin-left: 20px">aggregator</span>
+        </div>
+        <div class="app-title"></div>
+      </div>
+    </div>
+    <div fxFlex>
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <div *ngIf="isAuthenticated()" class="hide">
+          <mat-icon class="userIcon" style="margin-top: 10px">perm_identity</mat-icon>
+        </div>
+        <span class="userText">{{username}}</span>
+        <button *ngIf="isAuthenticated()" class="nav_button" mat-button="" (click)="logout()"
+                matTooltip="logout">
+          <mat-icon>power_settings_new</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+               [mode]="(isHandset$ | async) ? 'over' : 'side'"
+               [opened]="(isHandset$ | async) === true">
+    <mat-toolbar (click)="toggleOverlay(drawer.toggle())">aggregator</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item (click)="getUsers(); toggleOverlay(drawer.toggle());"
+         *ngIf="isAuthenticated() && isAdmin()"
+         class="hide">Users</a>
+      <a mat-list-item (click)="openCompanies(); toggleOverlay(drawer.toggle());">Companies</a>
+      <a mat-list-item (click)="about(); toggleOverlay(drawer.toggle());">About</a>
+      <a mat-list-item style="margin-top: 100px" href="https://angular.io/" target="_blank"
+         (click)="toggleOverlay(drawer.toggle())">Angular</a>
+      <a mat-list-item href="https://github.com/angular/flex-layout/" target="_blank"
+         (click)="toggleOverlay(drawer.toggle())">Flex
+        Layout</a>
+      <a mat-list-item href="https://material.angular.io/" target="_blank"
+         (click)="toggleOverlay(drawer.toggle())">Angular Material</a>
+    </mat-nav-list>
+  </mat-sidenav>
+</mat-sidenav-container>
+<div class="overlay" *ngIf="visible" (click)="toggleOverlay(drawer.toggle())"></div>

@@ -73,3 +73,7 @@ task installAngular(type:Exec) {
         commandLine "npm", "install"
     }
 }
+
+springBoot {
+    buildInfo()
+}
