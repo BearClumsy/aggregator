@@ -1,13 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {MatDialogRef} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
-
-export interface Info {
-  name: string;
-  version: string;
-  buildDate: string;
-}
+import {AboutService} from "../../service/about.service";
+import {About} from "../../model/about.model";
 
 @Component({
   selector: 'app-about',
@@ -15,27 +9,21 @@ export interface Info {
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit {
-  url = '/actuator/info';
   name: any;
   version: any;
   buildDate: any;
   author: any;
 
-  constructor(private http: HttpClient, public dialogRef: MatDialogRef<AboutComponent>) {
+  constructor(public dialogRef: MatDialogRef<AboutComponent>, private service: AboutService) {
   }
 
   ngOnInit(): void {
-    this.getInfo().subscribe(res => {
-      console.log(res);
+    this.service.getInfo().subscribe((res:About) => {
       this.name = res.build.name;
       this.version = res.build.version;
       this.buildDate = res.build.time;
       this.author = res.info.author;
     });
-  }
-
-  getInfo(): Observable<any> {
-    return this.http.get<Info>(this.url);
   }
 
   onCancel(): void {

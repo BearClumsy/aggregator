@@ -16,12 +16,18 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
 import {HttpClientModule} from '@angular/common/http';
+import {CompaniesComponent} from './component/companies/companies.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
-    AboutComponent
+    AboutComponent,
+    CompaniesComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +42,11 @@ import {HttpClientModule} from '@angular/common/http';
     MatButtonModule,
     MatTooltipModule,
     MatDialogModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -52,7 +52,7 @@ export class NavigationComponent implements OnInit {
   }
 
   openCompanies(): void {
-
+    this.router.navigate(['/companies']).then();
   }
 
   about(): void {
