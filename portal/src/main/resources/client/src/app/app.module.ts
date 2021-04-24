@@ -15,19 +15,30 @@ import {FlexModule} from '@angular/flex-layout';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {CompaniesComponent} from './component/companies/companies.component';
-import {MatTableModule} from "@angular/material/table";
-import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSortModule} from "@angular/material/sort";
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSortModule} from '@angular/material/sort';
+import { AuthComponent } from './component/auth/auth.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { RegistrationComponent } from './component/registration/registration.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Overlay} from '@angular/cdk/overlay';
+import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {BasicAuthInterceptor} from './helper/basic-auth.interceptor';
+import {ErrorInterceptor} from './helper/error.interceptor';
+import {AuthService} from './service/auth.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
     AboutComponent,
-    CompaniesComponent
+    CompaniesComponent,
+    AuthComponent,
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,
@@ -46,9 +57,16 @@ import {MatSortModule} from "@angular/material/sort";
     MatTableModule,
     MatPaginatorModule,
     MatFormFieldModule,
-    MatSortModule
+    MatSortModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    {provide: MatSnackBar, deps: [Overlay, LiveAnnouncer]},
+    {provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

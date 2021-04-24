@@ -4,7 +4,8 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {map, shareReplay} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
-import {AboutComponent} from "../about/about.component";
+import {AboutComponent} from '../about/about.component';
+import {AuthService} from '../../service/auth.service';
 
 @Component({
   selector: 'app-navigation',
@@ -20,23 +21,26 @@ export class NavigationComponent implements OnInit {
 
   @Input() visible = false;
   @Output() toggle: EventEmitter<boolean> = new EventEmitter<boolean>();
-  username: any;
+  username = '';
 
   constructor(private breakpointObserver: BreakpointObserver,
               public dialog: MatDialog,
-              // private authService: AuthService,
+              private authService: AuthService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    // this.username = this.authService.currentUserValue.email;
+    this.username = this.authService.currentUserValue.email;
   }
 
   isAuthenticated(): boolean {
-    return true;
+    const currentUser = this.authService.currentUserValue;
+    return !!currentUser;
   }
 
   logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']).then();
   }
 
   toggleOverlay(event: any): void {
@@ -45,10 +49,11 @@ export class NavigationComponent implements OnInit {
   }
 
   getUsers(): void {
+    this.router.navigate(['/users']).then();
   }
 
   isAdmin(): boolean {
-    return false;
+    return this.authService.currentUserValue.role === 'admin';
   }
 
   openCompanies(): void {

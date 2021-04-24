@@ -75,3 +75,19 @@ create unique index users_id_uindex
     on aggregator.users (id);
 
 
+create table aggregator.user_role
+(
+    user_id bigint not null
+        constraint user_role_user_id_fk
+            references aggregator.users,
+    role_id bigint not null
+        constraint user_role_pk
+            primary key
+        constraint user_role_role_id_fk
+            references aggregator.role
+);
+
+alter table aggregator.user_role
+    owner to pd_aggregator;
+
+insert into aggregator.user_role (user_id, role_id) VALUES (1, 1);

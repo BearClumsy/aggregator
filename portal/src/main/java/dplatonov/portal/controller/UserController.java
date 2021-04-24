@@ -15,10 +15,10 @@ import java.util.List;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService service;
+  private final UserService service;
 
-    @GetMapping
-    public ResponseEntity<List<UserPayload>> getUsers(){
-        return ResponseEntity.status(HttpStatus.OK).body(service.getUsers());
-    }
+  @GetMapping
+  public ResponseEntity<List<UserPayload>> getUsers() {
+    return ResponseEntity.status(HttpStatus.OK).body(service.getUsers());
+  }
 }

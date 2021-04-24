@@ -1,0 +1,35 @@
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutAlign.xs="center stretch"
+     fxLayoutGap="20px">
+  <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxFlex [ngStyle]="{'font-size.px': 28, color: 'grey'}">Authentication</div>
+  </div>
+  <form #loginForm="ngForm" (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutAlign="start stretch"
+        fxLayoutGap="10px">
+    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
+         fxLayoutGap="10px">
+<!--      <mat-form-field appearance="fill">-->
+        <label>
+          <input matInput placeholder="Enter your email" [formControl]="email" required>
+        </label>
+        <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+<!--      </mat-form-field>-->
+<!--      <mat-form-field>-->
+        <label>
+          <input matInput placeholder="Enter your password" [formControl]="password"
+                 [type]="'password'" required>
+        </label>
+        <mat-error *ngIf="email.invalid">{{getPasswordErrorMessage()}}</mat-error>
+<!--      </mat-form-field>-->
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
+         fxLayoutGap="10px">
+      <button mat-button fxFlex md-raised-button color="primary" type="submit"
+              [disabled]="!loginForm.form.valid">
+        <mat-icon>lock_open</mat-icon>
+      </button>
+      <button mat-button fxFlex md-raised-button color="primary" (click)="toRegistration()">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+  </form>
+</div>

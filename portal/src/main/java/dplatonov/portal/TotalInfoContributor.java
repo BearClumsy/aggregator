@@ -12,12 +12,12 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class TotalInfoContributor implements InfoContributor {
-    private final BuildProperties buildProperties;
+  private final BuildProperties buildProperties;
 
-    @Override
-    public void contribute(Info.Builder builder) {
-        Map<String, String> details = new HashMap<>();
-        details.put("author", buildProperties.getGroup());
-        builder.withDetail("info", details);
-    }
+  @Override
+  public void contribute(Info.Builder builder) {
+    Map<String, String> details = new HashMap<>();
+    details.put("author", buildProperties.getGroup());
+    builder.withDetail("info", details);
+  }
 }

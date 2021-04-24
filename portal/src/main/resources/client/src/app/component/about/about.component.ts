@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
-import {AboutService} from "../../service/about.service";
-import {About} from "../../model/about.model";
+import {AboutService} from '../../service/about.service';
+import {About} from '../../model/about.model';
 
 @Component({
   selector: 'app-about',
@@ -18,7 +18,7 @@ export class AboutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.getInfo().subscribe((res:About) => {
+    this.service.getInfo().subscribe((res: About) => {
       this.name = res.build.name;
       this.version = res.build.version;
       this.buildDate = res.build.time;

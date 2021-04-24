@@ -1,11 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {CompanyService} from "../../service/company.service";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
-import {map} from "rxjs/operators";
+import {HttpClient} from '@angular/common/http';
+import {MatDialog} from '@angular/material/dialog';
+import {CompanyService} from '../../service/company.service';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {map} from 'rxjs/operators';
 
 export interface PeriodicElement {
   position: number;
@@ -24,7 +24,7 @@ export class CompaniesComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'city', 'description'];
   private data: PeriodicElement[] = [];
   dataSource = new MatTableDataSource<PeriodicElement>(this.data);
-  private pageSize: number = 10;
+  private pageSize = 10;
 
   // @ts-ignore
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -46,7 +46,7 @@ export class CompaniesComponent implements OnInit {
           name: value.name,
           city: value.city,
           description: value.description
-        })
+        });
       });
       return periodicElements;
     })).subscribe(value => {
@@ -57,15 +57,15 @@ export class CompaniesComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue: string) {
+  applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  createCompany() {
+  createCompany(): void {
     // this.dialog.open(NewAddressBookComponent, {disableClose: false});
   }
 
-  selected(row?: PeriodicElement) {
+  selected(row?: PeriodicElement): void {
     /*const addressBook: AddressBookModel = {
       id: row.id,
       fullName: row.fullName,
