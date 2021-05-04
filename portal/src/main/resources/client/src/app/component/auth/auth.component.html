@@ -7,19 +7,19 @@
         fxLayoutGap="10px">
     <div fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
          fxLayoutGap="10px">
-<!--      <mat-form-field appearance="fill">-->
+      <mat-form-field appearance="fill">
         <label>
           <input matInput placeholder="Enter your email" [formControl]="email" required>
         </label>
         <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
-<!--      </mat-form-field>-->
-<!--      <mat-form-field>-->
+      </mat-form-field>
+      <mat-form-field appearance="fill">
         <label>
           <input matInput placeholder="Enter your password" [formControl]="password"
                  [type]="'password'" required>
         </label>
         <mat-error *ngIf="email.invalid">{{getPasswordErrorMessage()}}</mat-error>
-<!--      </mat-form-field>-->
+      </mat-form-field>
     </div>
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
          fxLayoutGap="10px">
