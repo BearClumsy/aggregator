@@ -26,15 +26,15 @@ public class User {
   @Id
   @Column(name = "id")
   @SequenceGenerator(
-      name = "user_id_seq",
-      sequenceName = "user_id_seq",
+      name = "users_id_seq",
+      sequenceName = "users_id_seq",
       schema = "aggregator",
       allocationSize = 1)
-  @GeneratedValue(generator = "user_id_seq", strategy = GenerationType.AUTO)
+  @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "name", nullable = false)
-  private String name;
+  @Column(name = "first_name", nullable = false)
+  private String firstName;
 
   @Column(name = "second_name", nullable = false)
   private String secondName;
@@ -44,6 +44,12 @@ public class User {
 
   @Column(name = "password", nullable = false)
   private String password;
+
+  @Column(name = "login", nullable = false)
+  private String login;
+
+  @Column(name = "active")
+  private boolean active;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "role_id")

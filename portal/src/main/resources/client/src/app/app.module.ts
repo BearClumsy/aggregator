@@ -30,6 +30,7 @@ import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {BasicAuthInterceptor} from './helper/basic-auth.interceptor';
 import {ErrorInterceptor} from './helper/error.interceptor';
 import {AuthService} from './service/auth.service';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -57,10 +58,12 @@ import {AuthService} from './service/auth.service';
     MatTableModule,
     MatPaginatorModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSortModule,
     FormsModule,
     ReactiveFormsModule
   ],
+  exports: [MatFormFieldModule, MatInputModule],
   providers: [
     AuthService,
     {provide: MatSnackBar, deps: [Overlay, LiveAnnouncer]},

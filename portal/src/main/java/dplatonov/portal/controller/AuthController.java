@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -48,9 +49,12 @@ public class AuthController {
   @ResponseStatus(HttpStatus.CREATED)
   @PutMapping("/registration")
   public ResponseEntity<UserPayload> registration(@Valid @RequestBody UserPayload user) {
-    UserPayload modifiedUserDto = authService.createUser(user);
-    UserPayload newUserDto = userService.createUser(modifiedUserDto);
+    UserPayload newUser = authService.createUser(user);
+    if (Objects.isNull(newUser)) {
+      ResponseEntity.status(HttpStatus.BAD_REQUEST).body(user);
+    }
+
     log.info("AUTHORIZATION-CONTROLLER-OO2: Registration is successful..");
-    return ResponseEntity.status(HttpStatus.OK).body(newUserDto);
+    return ResponseEntity.status(HttpStatus.OK).body(newUser);
   }
 }

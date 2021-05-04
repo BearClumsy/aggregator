@@ -11,17 +11,20 @@ public class UserPayload {
   private Long id;
 
   @NotEmpty(message = "Name cannot be empty")
-  private String name;
+  private String firstName;
 
-  @NotEmpty(message = "Second name cannot be empty")
+  @NotEmpty(message = "Second cannot be empty")
   private String secondName;
 
-  @NotEmpty(message = "Role name cannot be empty")
-  private String role;
-
-  @NotEmpty(message = "Email name cannot be empty")
+  @NotEmpty(message = "Email cannot be empty")
   private String email;
 
-  @NotEmpty(message = "Password name cannot be empty")
+  @NotEmpty(message = "Password cannot be empty")
   private String password;
+
+  @NotEmpty(message = "Login connot be empty")
+  private String login;
+
+  @NotEmpty(message = "Role cannot be empty")
+  private String role;
 }

@@ -1,1 +1,50 @@
-<p>registration works!</p>
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutAlign.xs="center stretch"
+     fxLayoutGap="20px">
+  <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxFlex [ngStyle]="{'font-size.px': 28, color: 'grey'}">Registration</div>
+  </div>
+  <form #regForm="ngForm" (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutAlign="start stretch"
+        fxLayoutGap="10px">
+    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
+         fxLayoutGap="10px">
+      <mat-form-field>
+        <label>
+          <input matInput placeholder="Enter you First Name" [formControl]="firstName" required>
+        </label>
+        <mat-error *ngIf="firstName.invalid">{{getFirstNameErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <label>
+          <input matInput placeholder="Enter you Second Name" [formControl]="secondName" required>
+        </label>
+        <mat-error *ngIf="secondName.invalid">{{getSecondNameErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <label>
+          <input matInput placeholder="Enter your email" [formControl]="email" required>
+        </label>
+        <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <label>
+          <input matInput placeholder="Enter your login name" [formControl]="login" required>
+        </label>
+        <mat-error *ngIf="login.invalid">{{getLoginErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <label>
+          <input matInput placeholder="Enter your password" [formControl]="password"
+                 [type]="'password'" required>
+        </label>
+        <mat-error *ngIf="email.invalid">{{getPasswordErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
+         fxLayoutGap="10px">
+      <button fxFlex md-raised-button color="primary" type="submit"
+              [disabled]="!regForm.form.valid">
+        <mat-icon>done</mat-icon>
+      </button>
+    </div>
+  </form>
+</div>

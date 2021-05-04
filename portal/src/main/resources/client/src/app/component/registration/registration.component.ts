@@ -13,10 +13,11 @@ import {first} from 'rxjs/operators';
 export class RegistrationComponent implements OnInit {
   private loading: boolean | undefined;
   private submitted: boolean | undefined;
-  private fullName = new FormControl();
-  private email = new FormControl('', [Validators.required, Validators.email]);
-  private secondName = new FormControl();
-  private password = new FormControl();
+  firstName = new FormControl();
+  secondName = new FormControl();
+  email = new FormControl('', [Validators.required, Validators.email]);
+  password = new FormControl();
+  login = new FormControl();
   private error = '';
   private loginUrl = '/login';
 
@@ -28,28 +29,29 @@ export class RegistrationComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    if (!this.fullName.value) {
+    if (!this.firstName.value) {
       return;
     }
-
-    if (!this.email.value) {
-      return;
-    }
-
     if (!this.secondName.value) {
       return;
     }
-
+    if (!this.email.value) {
+      return;
+    }
     if (!this.password.value) {
+      return;
+    }
+    if (!this.login.value){
       return;
     }
 
     this.loading = true;
     const user: User = {
-      name: this.fullName.value,
-      email: this.email.value,
+      firstName: this.firstName.value,
       secondName: this.secondName.value,
+      email: this.email.value,
       password: this.password.value,
+      login: this.login.value,
       role: 'PARTICIPANT'
     };
     this.authService.registration(user)
@@ -64,9 +66,15 @@ export class RegistrationComponent implements OnInit {
       );
   }
 
-  getFullNameErrorMessage(): string {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('full_name') ? 'Not a valid full name' :
+  getFirstNameErrorMessage(): string {
+    return this.firstName.hasError('required') ? 'You must enter a value' :
+      this.firstName.hasError('first_name') ? 'Not a valid first name' :
+        '';
+  }
+
+  getSecondNameErrorMessage(): string {
+    return this.secondName.hasError('required') ? 'You must enter a value' :
+      this.secondName.hasError('second_name') ? 'Not a valid second name' :
         '';
   }
 
@@ -77,14 +85,14 @@ export class RegistrationComponent implements OnInit {
   }
 
   getLoginErrorMessage(): string {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('login') ? 'Not a valid login' :
+    return this.login.hasError('required') ? 'You must enter a value' :
+      this.login.hasError('login') ? 'Not a valid login' :
         '';
   }
 
   getPasswordErrorMessage(): string {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('password') ? 'Not a valid password' :
+    return this.password.hasError('required') ? 'You must enter a value' :
+      this.password.hasError('password') ? 'Not a valid password' :
         '';
   }
 
