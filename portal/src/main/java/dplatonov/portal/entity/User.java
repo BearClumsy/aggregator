@@ -39,7 +39,7 @@ public class User {
   @Column(name = "second_name", nullable = false)
   private String secondName;
 
-  @Column(name = "email", nullable = false, unique = true)
+  @Column(name = "email", nullable = false)
   private String email;
 
   @Column(name = "password", nullable = false)

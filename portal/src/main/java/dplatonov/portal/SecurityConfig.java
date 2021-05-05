@@ -1,5 +1,6 @@
 package dplatonov.portal;
 
+import dplatonov.portal.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -56,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/**")
         .authenticated()
         .antMatchers("/user")
-        .hasRole("admin")
+        .hasRole(RoleEnum.getRoleEnum(RoleEnum.ADMIN))
         .and()
         .httpBasic()
         .and()

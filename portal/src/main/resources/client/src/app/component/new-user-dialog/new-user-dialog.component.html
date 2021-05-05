@@ -1,0 +1,59 @@
+<div fxLayoutGap="20px">
+  <div class="modal-header" fxLayout="column" fxLayoutAlign="center center" >
+    <div>New User</div>
+  </div>
+  <div class="modal-content" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
+    <form (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutAlign="start stretch"
+          fxLayoutGap="10px">
+      <div fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
+           fxLayoutGap="10px">
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter you First Name" [formControl]="firstName" required>
+          </label>
+          <mat-error *ngIf="firstName.invalid">{{getFirstNameErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter you Second Name" [formControl]="secondName" required>
+          </label>
+          <mat-error *ngIf="secondName.invalid">{{getSecondNameErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter your email" [formControl]="email" required>
+          </label>
+          <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter your login name" [formControl]="login" required>
+          </label>
+          <mat-error *ngIf="login.invalid">{{getLoginErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter your password" [formControl]="password"
+                   [type]="'password'" required>
+          </label>
+          <mat-error *ngIf="email.invalid">{{getPasswordErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Role" [formControl]="role">
+            <mat-option value="admin">ADMIN</mat-option>
+            <mat-option value="participant">PARTICIPANT</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+        <button mat-button fxFlex md-raised-button color="primary" type="submit">
+          <mat-icon>done</mat-icon>
+        </button>
+        <button mat-button md-raised-button type="button" color="primary" class="stretch-50-xs"
+                (click)="onCancel()">
+          <mat-icon (click)="onCancel()">cancel</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

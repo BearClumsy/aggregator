@@ -18,6 +18,8 @@ export class RegistrationComponent implements OnInit {
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl();
   login = new FormControl();
+  role = new FormControl();
+  active = new FormControl();
   private error = '';
   private loginUrl = '/login';
 
@@ -52,7 +54,8 @@ export class RegistrationComponent implements OnInit {
       email: this.email.value,
       password: this.password.value,
       login: this.login.value,
-      role: 'PARTICIPANT'
+      role: this.role.value,
+      active: this.active.value
     };
     this.authService.registration(user)
       .pipe(first())

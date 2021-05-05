@@ -31,6 +31,10 @@ import {BasicAuthInterceptor} from './helper/basic-auth.interceptor';
 import {ErrorInterceptor} from './helper/error.interceptor';
 import {AuthService} from './service/auth.service';
 import {MatInputModule} from '@angular/material/input';
+import { UsersComponent } from './component/users/users.component';
+import { NewUserDialogComponent } from './component/new-user-dialog/new-user-dialog.component';
+import {MatSelectModule} from '@angular/material/select';
+import { UserEditDialogComponent } from './component/user-edit-dialog/user-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +43,10 @@ import {MatInputModule} from '@angular/material/input';
     AboutComponent,
     CompaniesComponent,
     AuthComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    UsersComponent,
+    NewUserDialogComponent,
+    UserEditDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +68,8 @@ import {MatInputModule} from '@angular/material/input';
     MatInputModule,
     MatSortModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSelectModule
   ],
   exports: [MatFormFieldModule, MatInputModule],
   providers: [

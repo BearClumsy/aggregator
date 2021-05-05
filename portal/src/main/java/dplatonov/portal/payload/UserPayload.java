@@ -27,4 +27,6 @@ public class UserPayload {
 
   @NotEmpty(message = "Role cannot be empty")
   private String role;
+
+  private boolean active;
 }

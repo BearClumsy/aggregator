@@ -3,6 +3,7 @@ package dplatonov.portal.service;
 import dplatonov.portal.dao.UserDao;
 import dplatonov.portal.entity.Role;
 import dplatonov.portal.entity.User;
+import dplatonov.portal.enums.RoleEnum;
 import dplatonov.portal.payload.UserPayload;
 import dplatonov.portal.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -32,19 +33,51 @@ public class UserService {
   }
 
   public UserPayload createUser(UserPayload userPayload) {
-    Optional<Role> optionalRole = userValidator.validateNewUserRole(userPayload.getRole());
-    Optional<User> existOptionalUser = userValidator.validateNewUserByName(userPayload.getLogin());
-    if (existOptionalUser.isPresent() || optionalRole.isEmpty()) {
+    Optional<Role> optionalRole = userValidator.validateRole(userPayload.getRole());
+    Optional<User> existOptionalUser = userValidator.validateByLogin(userPayload.getLogin());
+    if (existOptionalUser.isPresent()
+        || optionalRole.isEmpty()
+        || optionalRole.get().getRole().equals(RoleEnum.getRoleEnum(RoleEnum.ADMIN))) {
+      log.warn("USER-SERVICE-002: User with login " + userPayload.getLogin() + " can't be created");
       return null;
     }
 
     userPayload.setPassword(encoder.encode(userPayload.getPassword()));
-    User newUser = mapUserPayloadToUser(userPayload, optionalRole.get());
+    User newUser = mapUserPayloadToUser(userPayload);
+    newUser.setRole(optionalRole.get());
     newUser.setActive(true);
 
     User savedUser = dao.save(newUser);
     log.info("USER-SERVICE-001: User is created success");
     return mapUsersToPayloads(savedUser);
+  }
+
+  public UserPayload updateUser(UserPayload updatableUser) {
+    Long updatableUserId = updatableUser.getId();
+    Optional<User> existOptionalUser = userValidator.validateById(updatableUserId);
+    Optional<Role> role = userValidator.validateRole(updatableUser.getRole());
+    if (existOptionalUser.isEmpty() || role.isEmpty()) {
+      return null;
+    }
+
+    User user = mapUserPayloadToUser(updatableUser);
+    user.setRole(role.get());
+    user.setPassword(encoder.encode(updatableUser.getPassword()));
+    User updatedUser = dao.save(user);
+    log.info("USER-SERVICE-003: User with id " + updatableUserId + " updated success");
+
+    return mapUsersToPayloads(updatedUser);
+  }
+
+  public void deleteUser(Long id) {
+    Optional<User> existOptionalUser = userValidator.validateById(id);
+    if (existOptionalUser.isEmpty() || !existOptionalUser.get().isActive()) {
+      return;
+    }
+
+    User existUser = existOptionalUser.get();
+    existUser.setActive(false);
+    dao.save(existUser);
   }
 
   private static UserPayload mapUsersToPayloads(User user) {
@@ -55,17 +88,19 @@ public class UserService {
         .email(user.getEmail())
         .role(user.getRole().getRole())
         .login(user.getLogin())
+        .active(user.isActive())
         .build();
   }
 
-  private User mapUserPayloadToUser(UserPayload userPayload, Role role) {
+  private User mapUserPayloadToUser(UserPayload userPayload) {
     return User.builder()
+        .id(userPayload.getId())
         .firstName(userPayload.getFirstName())
         .secondName(userPayload.getSecondName())
         .email(userPayload.getEmail())
         .password(userPayload.getPassword())
         .login(userPayload.getLogin())
-        .role(role)
+        .active(userPayload.isActive())
         .build();
   }
 }

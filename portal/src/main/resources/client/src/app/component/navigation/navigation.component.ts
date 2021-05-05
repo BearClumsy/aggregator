@@ -48,7 +48,7 @@ export class NavigationComponent implements OnInit {
     this.toggle.emit(this.visible);
   }
 
-  getUsers(): void {
+  openUsers(): void {
     this.router.navigate(['/users']).then();
   }
 

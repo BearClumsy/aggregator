@@ -18,7 +18,7 @@ public class UserValidator {
   private final UserDao userDao;
   private final RoleDao roleDao;
 
-  public Optional<User> validateNewUserByName(String login) {
+  public Optional<User> validateByLogin(String login) {
     Optional<User> existUserOptional = userDao.findByLogin(login);
     if (existUserOptional.isPresent()) {
       User existUser = existUserOptional.get();
@@ -33,12 +33,21 @@ public class UserValidator {
     return existUserOptional;
   }
 
-  public Optional<Role> validateNewUserRole(String role) {
+  public Optional<Role> validateRole(String role) {
     Optional<Role> optionalRole = roleDao.findByRole(role);
     if (optionalRole.isEmpty()) {
       log.error("USER-VALIDATOR-002: Role is not correct!");
     }
 
     return optionalRole;
+  }
+
+  public Optional<User> validateById(Long id) {
+    Optional<User> existUserOptional = userDao.findById(id);
+    if (existUserOptional.isEmpty()){
+      log.error("USER-VALIDATOR-003: User with id " + id + " does not exist!");
+    }
+
+    return existUserOptional;
   }
 }

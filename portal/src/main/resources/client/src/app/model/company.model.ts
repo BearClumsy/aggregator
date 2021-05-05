@@ -1,4 +1,4 @@
-import {Address} from "./address.model";
+import {Address} from './address.model';
 
 export interface Company {
   id: number;

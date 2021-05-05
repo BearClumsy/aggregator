@@ -33,7 +33,7 @@
                [opened]="(isHandset$ | async) === true">
     <mat-toolbar (click)="toggleOverlay(drawer.toggle())">aggregator</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item (click)="getUsers(); toggleOverlay(drawer.toggle());"
+      <a mat-list-item (click)="openUsers(); toggleOverlay(drawer.toggle());"
          *ngIf="isAuthenticated() && isAdmin()"
          class="hide">Users</a>
       <a mat-list-item (click)="openCompanies(); toggleOverlay(drawer.toggle());">Companies</a>

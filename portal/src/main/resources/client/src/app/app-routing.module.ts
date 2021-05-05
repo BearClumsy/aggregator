@@ -4,12 +4,14 @@ import {CompaniesComponent} from './component/companies/companies.component';
 import {AuthComponent} from './component/auth/auth.component';
 import {RegistrationComponent} from './component/registration/registration.component';
 import {AuthGuardService} from './helper/auth-guard.service';
+import {UsersComponent} from './component/users/users.component';
 
 const routes: Routes = [
-  {path: '', component: CompaniesComponent, canActivate: [AuthGuardService]},
   {path: 'companies', component: CompaniesComponent, canActivate: [AuthGuardService]},
-  {path: 'login', component: AuthComponent},
+  {path: 'users', component: UsersComponent, canActivate: [AuthGuardService]},
   {path: 'registration', component: RegistrationComponent},
+  {path: 'login', component: AuthComponent},
+  {path: '', component: CompaniesComponent, canActivate: [AuthGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
