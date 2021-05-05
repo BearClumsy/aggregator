@@ -66,8 +66,8 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(filterValue: any): void {
+    this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
   }
 
   createUser(): void {
