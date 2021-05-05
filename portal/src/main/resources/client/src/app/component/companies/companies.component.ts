@@ -26,10 +26,8 @@ export class CompaniesComponent implements OnInit {
   dataSource = new MatTableDataSource<PeriodicElement>(this.data);
   private pageSize = 10;
 
-  // @ts-ignore
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  // @ts-ignore
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
 
   constructor(private http: HttpClient,
               private dialog: MatDialog,
@@ -57,8 +55,8 @@ export class CompaniesComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    applyFilter(filterValue: any): void {
+    this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
   }
 
   createCompany(): void {

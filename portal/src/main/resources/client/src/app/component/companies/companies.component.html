@@ -5,12 +5,12 @@
        fxLayoutAlign="start"
        fxLayoutGap="10px"
        fxLayoutGap.xs="0">
-    <!--<mat-form-field fxFlex="90%">
+    <mat-form-field fxFlex="90%">
       <label>
-        <input matInput (keyup)="applyFilter($event.target.value)"
+        <input matInput (keyup)="applyFilter($event)"
                placeholder="Filter">
       </label>
-    </mat-form-field>-->
+    </mat-form-field>
     <button mat-button color="primary" fxFlex="10%" value="bold" (click)="createCompany()">
       <mat-icon>add</mat-icon>
       New
