@@ -35,6 +35,8 @@ import { UsersComponent } from './component/users/users.component';
 import { NewUserDialogComponent } from './component/new-user-dialog/new-user-dialog.component';
 import {MatSelectModule} from '@angular/material/select';
 import { UserEditDialogComponent } from './component/user-edit-dialog/user-edit-dialog.component';
+import { NewCompanyDialogComponent } from './component/new-company-dialog/new-company-dialog.component';
+import { CompanyEditDialogComponent } from './component/company-edit-dialog/company-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import { UserEditDialogComponent } from './component/user-edit-dialog/user-edit-
     RegistrationComponent,
     UsersComponent,
     NewUserDialogComponent,
-    UserEditDialogComponent
+    UserEditDialogComponent,
+    NewCompanyDialogComponent,
+    CompanyEditDialogComponent
   ],
   imports: [
     BrowserModule,

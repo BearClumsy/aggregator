@@ -6,6 +6,10 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {map} from 'rxjs/operators';
+import {Company} from '../../model/company.model';
+import {Address} from '../../model/address.model';
+import {NewCompanyDialogComponent} from '../new-company-dialog/new-company-dialog.component';
+import {CompanyEditDialogComponent} from '../company-edit-dialog/company-edit-dialog.component';
 
 export interface PeriodicElement {
   position: number;
@@ -13,6 +17,7 @@ export interface PeriodicElement {
   name: string;
   city: string;
   description: string;
+  addresses: Address[];
 }
 
 @Component({
@@ -43,7 +48,8 @@ export class CompaniesComponent implements OnInit {
           id: value.id,
           name: value.name,
           city: value.city,
-          description: value.description
+          description: value.description,
+          addresses: value.addresses
         });
       });
       return periodicElements;
@@ -55,24 +61,23 @@ export class CompaniesComponent implements OnInit {
     });
   }
 
-    applyFilter(filterValue: any): void {
+  applyFilter(filterValue: any): void {
     this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
   }
 
   createCompany(): void {
-    // this.dialog.open(NewAddressBookComponent, {disableClose: false});
+    this.dialog.open(NewCompanyDialogComponent, {disableClose: false});
   }
 
-  selected(row?: PeriodicElement): void {
-    /*const addressBook: AddressBookModel = {
-      id: row.id,
-      fullName: row.fullName,
-      email: row.email,
+  selected(row: PeriodicElement): void {
+    const company: Company = {
+      id: row?.id,
+      city: row.city,
+      description: row.description,
+      name: row.name,
+      addresses: row.addresses
     };
 
-    this.dialog.open(AddressBookEditDialogComponent, {
-      disableClose: false,
-      data: {pageValue: addressBook}
-    });*/
+    this.dialog.open(CompanyEditDialogComponent, {disableClose: false, data: {pageValue: company.addresses}});
   }
 }
