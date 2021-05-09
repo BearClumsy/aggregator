@@ -273,3 +273,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /portal/src/main/resources/public/
+/portal/.idea/
