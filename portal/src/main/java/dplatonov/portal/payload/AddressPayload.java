@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class AddressPayload {
-  public Long id;
-  public String city;
-  public String address;
+  private Long id;
+  private String city;
+  private String address;
 }

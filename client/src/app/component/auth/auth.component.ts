@@ -24,8 +24,8 @@ export class AuthComponent implements OnInit {
   }
 
   getPasswordErrorMessage(): string {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('password') ? 'Not a valid password' :
+    return this.password.hasError('required') ? 'You must enter a value' :
+      this.password.hasError('password') ? 'Not a valid password' :
         '';
   }
 

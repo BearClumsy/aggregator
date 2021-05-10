@@ -7,11 +7,11 @@ import dplatonov.portal.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class UserValidator {
   private static final Logger log = LoggerFactory.getLogger(UserValidator.class);
@@ -20,14 +20,8 @@ public class UserValidator {
 
   public Optional<User> validateByLogin(String login) {
     Optional<User> existUserOptional = userDao.findByLogin(login);
-    if (existUserOptional.isPresent()) {
-      User existUser = existUserOptional.get();
-      log.warn(
-          "USER-VALIDATOR-001: Current User with name "
-              + existUser.getFirstName()
-              + " and email "
-              + existUser.getEmail()
-              + " is exist");
+    if (existUserOptional.isEmpty()) {
+      log.warn("USER-VALIDATOR-001: User with login " + login + " is not exist");
     }
 
     return existUserOptional;
@@ -44,7 +38,7 @@ public class UserValidator {
 
   public Optional<User> validateById(Long id) {
     Optional<User> existUserOptional = userDao.findById(id);
-    if (existUserOptional.isEmpty()){
+    if (existUserOptional.isEmpty()) {
       log.error("USER-VALIDATOR-003: User with id " + id + " does not exist!");
     }
 

@@ -10,6 +10,15 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Filter">
       </label>
     </mat-form-field>
+    <button mat-button color="primary" fxFlex="10%" value="bold" (click)="onEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-button color="primary" fxFlex="10%" value="bold" (click)="onDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-button color="primary" fxFlex="10%" value="bold" (click)="onCancel()">
+      <mat-icon>cancel</mat-icon>
+    </button>
   </div>
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="position">

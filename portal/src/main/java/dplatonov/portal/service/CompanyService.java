@@ -5,20 +5,69 @@ import dplatonov.portal.entity.Address;
 import dplatonov.portal.entity.Company;
 import dplatonov.portal.payload.AddressPayload;
 import dplatonov.portal.payload.CompanyPayload;
-import java.util.List;
-import java.util.stream.Collectors;
+import dplatonov.portal.validate.CompanyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
   private final CompanyDao dao;
+  private final CompanyValidator validator;
+  private final AddressService addressService;
 
   public List<CompanyPayload> getCompanies() {
     return dao.findAll().stream()
         .map(CompanyService::mapCompanyToPayload)
         .collect(Collectors.toList());
+  }
+
+  public CompanyPayload create(CompanyPayload newCompany) {
+    Company company = mapCompanyPayloadToCompany(newCompany);
+    Optional<Company> existCompanyOptional = validator.isExist(company.getName());
+    if (existCompanyOptional.isPresent()) {
+      return null;
+    }
+
+    Company saved = dao.save(company);
+    return mapCompanyToPayload(saved);
+  }
+
+  public CompanyPayload update(CompanyPayload changes) {
+    Company company = mapCompanyPayloadToCompany(changes);
+    Optional<Company> existCompanyOptional = validator.isExist(company.getId());
+    if (existCompanyOptional.isEmpty()) {
+      return null;
+    }
+
+    Company saved = dao.save(company);
+    return mapCompanyToPayload(saved);
+  }
+
+  private Address mapAddressPayloadToAddress(AddressPayload addressPayload) {
+    return Address.builder()
+        .id(addressPayload.getId())
+        .city(addressPayload.getCity())
+        .address(addressPayload.getAddress())
+        .build();
+  }
+
+  private Company mapCompanyPayloadToCompany(CompanyPayload payload) {
+    List<Address> addresses =
+        payload.getAddresses().stream()
+            .map(this::mapAddressPayloadToAddress)
+            .collect(Collectors.toList());
+    return Company.builder()
+        .id(payload.getId())
+        .city(payload.getCity())
+        .description(payload.getDescription())
+        .name(payload.getName())
+        .addresses(addresses)
+        .build();
   }
 
   private static CompanyPayload mapCompanyToPayload(Company company) {

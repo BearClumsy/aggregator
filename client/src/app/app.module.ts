@@ -37,6 +37,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { UserEditDialogComponent } from './component/user-edit-dialog/user-edit-dialog.component';
 import { NewCompanyDialogComponent } from './component/new-company-dialog/new-company-dialog.component';
 import { CompanyEditDialogComponent } from './component/company-edit-dialog/company-edit-dialog.component';
+import { AddressEditDialogComponent } from './component/address-edit-dialog/address-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { CompanyEditDialogComponent } from './component/company-edit-dialog/comp
     NewUserDialogComponent,
     UserEditDialogComponent,
     NewCompanyDialogComponent,
-    CompanyEditDialogComponent
+    CompanyEditDialogComponent,
+    AddressEditDialogComponent
   ],
   imports: [
     BrowserModule,

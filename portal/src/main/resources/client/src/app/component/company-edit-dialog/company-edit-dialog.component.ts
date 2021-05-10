@@ -2,11 +2,9 @@ import {Component, Inject, OnInit, Optional, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {UserService} from '../../service/user.service';
-import {Router} from '@angular/router';
-import {Location} from '@angular/common';
-import {Address} from '../../model/address.model';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Company} from '../../model/company.model';
+import {AddressEditDialogComponent} from '../address-edit-dialog/address-edit-dialog.component';
 
 export interface PeriodicElement {
   position: number;
@@ -31,15 +29,13 @@ export class CompanyEditDialogComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
 
   constructor(private dialogRef: MatDialogRef<CompanyEditDialogComponent>,
-              private userService: UserService,
-              private router: Router,
-              private location: Location,
-              @Optional() @Inject(MAT_DIALOG_DATA) data: { pageValue: Address[] }) {
+              private dialog: MatDialog,
+              @Optional() @Inject(MAT_DIALOG_DATA) data: { pageValue: Company }) {
     this.data = data;
   }
 
   ngOnInit(): void {
-    this.data.pageValue.forEach((value, index) => {
+    this.data.pageValue.addresses.forEach((value, index) => {
       this.periodicElements.push({
         position: index,
         id: value.id,
@@ -63,4 +59,16 @@ export class CompanyEditDialogComponent implements OnInit {
     window.open('https://www.google.com.ua/maps/search/' + city + ',' + address, '_blank');
   }
 
+  onEdit(): void {
+    this.dialog.open(AddressEditDialogComponent, {data: this.data.pageValue});
+    this.dialogRef.close();
+  }
+
+  onDelete(): void {
+    this.dialogRef.close();
+  }
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
 }

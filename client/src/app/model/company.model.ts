@@ -1,7 +1,7 @@
 import {Address} from './address.model';
 
 export interface Company {
-  id: number;
+  id?: number;
   name: string;
   city: string;
   description: string;

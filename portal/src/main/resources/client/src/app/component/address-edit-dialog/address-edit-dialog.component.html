@@ -1,6 +1,6 @@
 <div fxLayoutGap="20px">
   <div class="modal-header" fxLayout="column" fxLayoutAlign="center center">
-    <span style="font: 25px bold">New Company</span>
+    <span style="font: 25px bold">Edit Company</span>
   </div>
   <div class="modal-content" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
     <form fxLayout="column" fxLayoutAlign="start stretch"
@@ -30,7 +30,7 @@
             <td mat-cell *matCellDef="let element">
               <mat-form-field class="example-full-width">
                 <label>
-                  <input matInput placeholder="Enter city" [formControl]="city" required>
+                  <input matInput placeholder="Enter city" [formControl]="city" required [value]=element.city>
                 </label>
                 <mat-error *ngIf="description.invalid">{{getCityErrorMessage()}}</mat-error>
               </mat-form-field>
@@ -41,9 +41,9 @@
             <td mat-cell *matCellDef="let element">
               <mat-form-field class="example-full-width">
                 <label>
-                  <input matInput placeholder="Enter address" [formControl]="address" required>
+                  <input matInput placeholder="Enter address" [formControl]="address" required [value]=element.address>
                 </label>
-                <mat-error *ngIf="description.invalid">{{getAddressesErrorMessage()}}</mat-error>
+                <mat-error *ngIf="description.invalid">{{getAddressErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>
           </ng-container>
@@ -61,6 +61,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
       </div>
       <div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
         <button mat-button color="primary" fxFlex value="bold" (click)="addNewAddress()">

@@ -13,7 +13,7 @@ import {CompanyEditDialogComponent} from '../company-edit-dialog/company-edit-di
 
 export interface PeriodicElement {
   position: number;
-  id: number;
+  id?: number;
   name: string;
   city: string;
   description: string;
@@ -78,6 +78,6 @@ export class CompaniesComponent implements OnInit {
       addresses: row.addresses
     };
 
-    this.dialog.open(CompanyEditDialogComponent, {disableClose: false, data: {pageValue: company.addresses}});
+    this.dialog.open(CompanyEditDialogComponent, {disableClose: false, data: {pageValue: company}});
   }
 }
