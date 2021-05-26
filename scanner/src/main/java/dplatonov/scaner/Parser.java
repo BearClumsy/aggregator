@@ -1,23 +1,37 @@
 package dplatonov.scaner;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.back;
-import static com.codeborne.selenide.Selenide.open;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import dplatonov.scaner.dao.CompanyDAO;
+import dplatonov.scaner.dao.ConfigDao;
 import dplatonov.scaner.entity.Address;
 import dplatonov.scaner.entity.Company;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.closeWindow;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.switchTo;
 
 @Configuration
 @EnableScheduling
@@ -25,20 +39,36 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class Parser {
   private static final Logger log = LogManager.getLogger(Parser.class);
   private static final String URL = "https://jobs.dou.ua/companies/";
-  private static final int COUNT_OF_PAGE = 0;
-  private final CompanyDAO dao;
+  private final CompanyDAO companyDAO;
+  private final ConfigDao configDao;
+  public static final String REMOTE_URL_FIREFOX = "http://hub:4444/wd/hub";
+  private RemoteWebDriver remoteWebDriver;
 
   @Scheduled(fixedDelay = 3600000) // once in day
   public void task() {
+    config();
     open(URL);
     downloadPages();
     ArrayList<Company> companies = pars();
     save(companies);
+    closeWebDriver();
+  }
+
+  private void config() {
+    try {
+      remoteWebDriver =
+          new RemoteWebDriver(new URL(REMOTE_URL_FIREFOX), DesiredCapabilities.firefox());
+      remoteWebDriver.manage().window().maximize();
+      WebDriverRunner.setWebDriver(remoteWebDriver);
+    } catch (MalformedURLException e) {
+      log.info("Can't connect to remote web driver");
+    }
   }
 
   private void downloadPages() {
     log.info("Start download HTML");
-    IntStream.range(0, COUNT_OF_PAGE)
+    int countOfPage = configDao.findAll().get(0).getScannerPageNum();
+    IntStream.range(0, countOfPage)
         .forEach(
             value -> {
               try {
@@ -54,11 +84,18 @@ public class Parser {
   private ArrayList<Company> pars() {
     log.info("Start HTML parsing!");
     ArrayList<Company> companies = new ArrayList<>();
-    int size = $$(By.className("l-company")).size();
+    ElementsCollection company = $$(By.className("l-items")).get(0).$$(By.className("company"));
+    int size = company.size();
     IntStream.range(0, size)
         .forEach(
             i -> {
-              SelenideElement el = $$(By.className("l-company")).get(i);
+              SelenideElement el = company.get(i);
+              if (!el.$(By.className("cn-a")).exists()
+                  || !el.$(By.className("city")).exists()
+                  || !el.$(By.className("descr")).exists()) {
+                return;
+              }
+
               String name = el.$(By.className("cn-a")).text();
               String cities = el.$(By.className("city")).text();
               String description = el.$(By.className("descr")).text();
@@ -79,7 +116,17 @@ public class Parser {
 
   private ArrayList<Address> downloadAndParsOfficesForCurrentCompany(SelenideElement sel) {
     ArrayList<Address> addresses = new ArrayList<>();
-    sel.find(By.linkText("Офисы")).click();
+    WebElement officesLink = sel.findElement(By.linkText("Офисы"));
+    Actions actions = new Actions(this.remoteWebDriver);
+    ((JavascriptExecutor) this.remoteWebDriver)
+        .executeScript("arguments[0].scrollIntoView(true);", officesLink);
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      log.warn("Application was interrupted when scroll down to link");
+    }
+    actions.keyDown(Keys.CONTROL).click(officesLink).keyUp(Keys.CONTROL).build().perform();
+    switchTo().window(1);
     $$(By.className("city"))
         .forEach(
             el -> {
@@ -94,13 +141,19 @@ public class Parser {
                                   .address(address.replace(" (показать на карте)", ""))
                                   .build()));
             });
-    back();
+    closeWindow();
+    switchTo().window(0);
     return addresses;
   }
 
   private void save(List<Company> companies) {
     log.info("Founded companies start save in to PostgreSQL");
-    dao.saveAll(companies);
+    companyDAO.saveAll(companies);
     log.info("Founded companies is saved in PostgreSQL");
+  }
+
+  private void closeWebDriver() {
+    WebDriverRunner.closeWebDriver();
+    log.info("Web Driver is closed success");
   }
 }

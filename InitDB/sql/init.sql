@@ -91,3 +91,18 @@ create table if not exists aggregator.user_role
 
 alter table aggregator.user_role
     owner to pd_aggregator;
+
+
+create table if not exists aggregator.config
+(
+    id               bigserial not null
+        constraint config_pk
+            primary key,
+    scanner_page_num integer   not null
+);
+
+alter table aggregator.config
+    owner to pd_aggregator;
+
+create unique index config_id_uindex
+    on aggregator.config (id);

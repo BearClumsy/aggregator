@@ -6,3 +6,5 @@ INSERT INTO aggregator.users (first_name, second_name, email, password, role_id,
 VALUES ('admin', 'admin', 'admin@test.com', '$2a$10$qNIZHEGD8CBX6NyGJ4GSjuPO5.gKbgqa2/ShyOBJOLhA.apLjOFgm', 1, true,
         'tester');
 INSERT INTO aggregator.user_role (user_id, role_id) VALUES (1, 1);
+
+insert into aggregator.config (scanner_page_num) values (20);

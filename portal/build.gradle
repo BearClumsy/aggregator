@@ -36,42 +36,41 @@ test {
     useJUnitPlatform()
 }
 
-//def webappDir = "$projectDir/src/main/resources/client"
-//sourceSets {
-//    main {
-//        resources {
-//            srcDirs = ["$webappDir/dist", "$projectDir/src/main/resources"]
-//        }
-//    }
-//}
-//
-//processResources {
-//    dependsOn "buildAngular"
-//}
-//
-//task buildAngular(type:Exec) {
-//    dependsOn "sourceSets"
-//    dependsOn "installAngular"
-//    workingDir "$webappDir"
-//    inputs.dir "$webappDir"
-//    group = BasePlugin.BUILD_GROUP
-//    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-//        commandLine "ng.cmd", "build"
-//    } else {
-//        commandLine "ng", "build"
-//    }
-//}
-//
-//task installAngular(type:Exec) {
-//    workingDir "$webappDir"
-//    inputs.dir "$webappDir"
-//    group = BasePlugin.BUILD_GROUP
-//    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-//        commandLine "npm.cmd", "install"
-//    } else {
-//        commandLine "npm", "install"
-//    }
-//}
+def webappDir = "$projectDir/src/main/resources/client"
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["$webappDir/dist", "$projectDir/src/main/resources"]
+        }
+    }
+}
+
+processResources {
+    dependsOn "buildAngular"
+}
+
+task buildAngular(type:Exec) {
+    dependsOn "installAngular"
+    workingDir "$webappDir"
+    inputs.dir "$webappDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "ng.cmd", "build"
+    } else {
+        commandLine "ng", "build"
+    }
+}
+
+task installAngular(type:Exec) {
+    workingDir "$webappDir"
+    inputs.dir "$webappDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "npm.cmd", "install"
+    } else {
+        commandLine "npm", "install"
+    }
+}
 
 springBoot {
     buildInfo()
