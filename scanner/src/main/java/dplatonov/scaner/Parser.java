@@ -31,7 +31,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.closeWindow;
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.switchTo;
 
 @Configuration
 @EnableScheduling
@@ -121,28 +120,32 @@ public class Parser {
     ((JavascriptExecutor) this.remoteWebDriver)
         .executeScript("arguments[0].scrollIntoView(true);", officesLink);
     try {
-      Thread.sleep(1000);
+      Thread.sleep(5000);
     } catch (InterruptedException e) {
       log.warn("Application was interrupted when scroll down to link");
     }
     actions.keyDown(Keys.CONTROL).click(officesLink).keyUp(Keys.CONTROL).build().perform();
-    switchTo().window(1);
-    $$(By.className("city"))
-        .forEach(
-            el -> {
-              String city = el.$(By.tagName("h4")).text();
-              el.$$(By.className("address"))
-                  .texts()
-                  .forEach(
-                      address ->
-                          addresses.add(
-                              Address.builder()
-                                  .city(city)
-                                  .address(address.replace(" (показать на карте)", ""))
-                                  .build()));
-            });
+    ArrayList<String> tabs = new ArrayList<>(this.remoteWebDriver.getWindowHandles());
+    this.remoteWebDriver.switchTo().window(tabs.get(1));
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      log.warn("Application was interrupted when scroll down to link");
+    }
+    ElementsCollection cityEl = $$(By.className("city"));
+    for (SelenideElement el : cityEl) {
+      String cityValue = el.$(By.tagName("h4")).text();
+      List<String> addressValues = el.$$(By.className("address")).texts();
+      for (String addressValue : addressValues) {
+        addresses.add(
+            Address.builder()
+                .city(cityValue)
+                .address(addressValue.replace(" (показать на карте)", ""))
+                .build());
+      }
+    }
     closeWindow();
-    switchTo().window(0);
+    this.remoteWebDriver.switchTo().window(tabs.get(0));
     return addresses;
   }
 
