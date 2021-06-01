@@ -21,9 +21,9 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSortModule} from '@angular/material/sort';
-import { AuthComponent } from './component/auth/auth.component';
+import {AuthComponent} from './component/auth/auth.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { RegistrationComponent } from './component/registration/registration.component';
+import {RegistrationComponent} from './component/registration/registration.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Overlay} from '@angular/cdk/overlay';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
@@ -31,13 +31,13 @@ import {BasicAuthInterceptor} from './helper/basic-auth.interceptor';
 import {ErrorInterceptor} from './helper/error.interceptor';
 import {AuthService} from './service/auth.service';
 import {MatInputModule} from '@angular/material/input';
-import { UsersComponent } from './component/users/users.component';
-import { NewUserDialogComponent } from './component/new-user-dialog/new-user-dialog.component';
+import {UsersComponent} from './component/users/users.component';
+import {NewUserDialogComponent} from './component/new-user-dialog/new-user-dialog.component';
 import {MatSelectModule} from '@angular/material/select';
-import { UserEditDialogComponent } from './component/user-edit-dialog/user-edit-dialog.component';
-import { NewCompanyDialogComponent } from './component/new-company-dialog/new-company-dialog.component';
-import { CompanyEditDialogComponent } from './component/company-edit-dialog/company-edit-dialog.component';
-import { AddressEditDialogComponent } from './component/address-edit-dialog/address-edit-dialog.component';
+import {UserEditDialogComponent} from './component/user-edit-dialog/user-edit-dialog.component';
+import {NewCompanyDialogComponent} from './component/new-company-dialog/new-company-dialog.component';
+import {CompanyEditDialogComponent} from './component/company-edit-dialog/company-edit-dialog.component';
+import {AddressEditDialogComponent} from './component/address-edit-dialog/address-edit-dialog.component';
 
 @NgModule({
   declarations: [

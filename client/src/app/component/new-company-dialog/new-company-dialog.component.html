@@ -1,0 +1,83 @@
+<div fxLayoutGap="20px">
+  <div class="modal-header" fxLayout="column" fxLayoutAlign="center center">
+    <span style="font: 25px bold">New Company</span>
+  </div>
+  <div class="modal-content" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
+    <form fxLayout="column" fxLayoutAlign="start stretch"
+          fxLayoutGap="10px">
+      <div fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start stretch"
+           fxLayoutGap="10px">
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter company Name" [formControl]="name" required>
+          </label>
+          <mat-error *ngIf="name.invalid">{{getNameErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <label>
+            <input matInput placeholder="Enter description" [formControl]="description" required>
+          </label>
+          <mat-error *ngIf="description.invalid">{{getDescriptionErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <table mat-table
+               [dataSource]="dataSource"
+               matSort
+               cdkDropList
+               cdkDropListOrientation="horizontal"
+               style="width: 100%">
+          <ng-container matColumnDef="city">
+            <th mat-header-cell *matHeaderCellDef> City</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="example-full-width">
+                <label>
+                  <input matInput placeholder="Enter city" [formControl]="city" required>
+                </label>
+                <mat-error *ngIf="description.invalid">{{getCityErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef> Address</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="example-full-width">
+                <label>
+                  <input matInput placeholder="Enter address" [formControl]="address" required>
+                </label>
+                <mat-error *ngIf="description.invalid">{{getAddressesErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element">
+              <div style="height: 60px">
+                <br>
+              </div>
+              <button mat-button color="primary" fxFlex value="bold" (click)="delete(element)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+        <button mat-button color="primary" fxFlex value="bold" (click)="addNewAddress()">
+          <mat-icon>add</mat-icon>
+          Add new Address
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+        <button mat-button fxFlex md-raised-button color="primary" type="submit">
+          <mat-icon (click)="onSubmit()">done</mat-icon>
+        </button>
+        <button mat-button fxFlex md-raised-button md-raised-button type="button" color="primary" class="stretch-50-xs"
+                (click)="onCancel()">
+          <mat-icon (click)="onCancel()">cancel</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
