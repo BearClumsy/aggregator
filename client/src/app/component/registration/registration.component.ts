@@ -54,8 +54,8 @@ export class RegistrationComponent implements OnInit {
       email: this.email.value,
       password: this.password.value,
       login: this.login.value,
-      role: this.role.value,
-      active: this.active.value
+      role: 'participant',
+      active: true
     };
     this.authService.registration(user)
       .pipe(first())

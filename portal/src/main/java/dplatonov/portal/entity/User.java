@@ -52,6 +52,6 @@ public class User {
   private boolean active;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "role_id")
+  @JoinColumn(name = "roles_id")
   private Role role;
 }

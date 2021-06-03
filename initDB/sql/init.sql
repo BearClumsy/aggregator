@@ -1,21 +1,21 @@
 create schema if not exists aggregator;
 
-create table if not exists aggregator.role
+create table if not exists aggregator.roles
 (
-    id   bigserial not null
-        constraint role_pk
+    id    bigserial not null
+        constraint roles_pk
             primary key,
-    role varchar   not null
+    roles varchar   not null
 );
 
-alter table aggregator.role
+alter table aggregator.roles
     owner to pd_aggregator;
 
-create unique index if not exists role_id_uindex
-    on aggregator.role (id);
+create unique index if not exists roles_id_uindex
+    on aggregator.roles (id);
 
-create unique index if not exists role_role_uindex
-    on aggregator.role (role);
+create unique index if not exists roles_roles_uindex
+    on aggregator.roles (roles);
 
 
 create table if not exists aggregator.users
@@ -27,9 +27,9 @@ create table if not exists aggregator.users
     second_name varchar              not null,
     email       varchar              not null,
     password    varchar              not null,
-    role_id     bigint               not null
-        constraint users_role_id_fk
-            references aggregator.role,
+    roles_id    bigint               not null
+        constraint users_roles_id_fk
+            references aggregator.roles,
     active      boolean default true not null,
     login       varchar              not null
 );
@@ -75,22 +75,6 @@ alter table aggregator.address
 
 create unique index if not exists address_id_uindex
     on aggregator.address (id);
-
-
-create table if not exists aggregator.user_role
-(
-    user_id bigint not null
-        constraint user_role_user_id_fk
-            references aggregator.users,
-    role_id bigint not null
-        constraint user_role_pk
-            primary key
-        constraint user_role_role_id_fk
-            references aggregator.role
-);
-
-alter table aggregator.user_role
-    owner to pd_aggregator;
 
 
 create table if not exists aggregator.config

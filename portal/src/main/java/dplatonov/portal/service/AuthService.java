@@ -11,6 +11,7 @@ public class AuthService {
 
     public UserPayload createUser(UserPayload user) {
         user.setRole("participant");
+        user.setActive(true);
         return userService.createUser(user);
     }
 }

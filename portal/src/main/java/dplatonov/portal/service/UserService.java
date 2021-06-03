@@ -45,7 +45,6 @@ public class UserService {
     userPayload.setPassword(encoder.encode(userPayload.getPassword()));
     User newUser = mapUserPayloadToUser(userPayload);
     newUser.setRole(optionalRole.get());
-    newUser.setActive(true);
 
     User savedUser = dao.save(newUser);
     log.info("USER-SERVICE-001: User is created success");

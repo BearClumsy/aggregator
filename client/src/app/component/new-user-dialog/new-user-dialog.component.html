@@ -36,12 +36,18 @@
             <input matInput placeholder="Enter your password" [formControl]="password"
                    [type]="'password'" required>
           </label>
-          <mat-error *ngIf="email.invalid">{{getPasswordErrorMessage()}}</mat-error>
+          <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Role" [formControl]="role">
             <mat-option value="admin">ADMIN</mat-option>
             <mat-option value="participant">PARTICIPANT</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Active" [formControl]="active">
+            <mat-option value="true">TRUE</mat-option>
+            <mat-option value="false">FALSE</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

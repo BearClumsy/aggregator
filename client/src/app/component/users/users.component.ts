@@ -18,7 +18,7 @@ export interface PeriodicElement {
   email: string;
   login: string;
   role: string;
-  active: string;
+  active: boolean;
 }
 
 @Component({

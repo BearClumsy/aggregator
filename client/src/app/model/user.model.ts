@@ -7,5 +7,5 @@ export interface User {
   login: string;
   role: string;
   authdata?: string;
-  active: string;
+  active: boolean;
 }

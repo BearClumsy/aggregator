@@ -275,3 +275,4 @@ Thumbs.db
 /portal/src/main/resources/public/
 /portal/.idea/
 /client/client.iml
+/client/package-lock.json

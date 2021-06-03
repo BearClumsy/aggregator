@@ -56,8 +56,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .antMatchers("/**")
         .authenticated()
-        .antMatchers("/user")
-        .hasRole(RoleEnum.getRoleEnum(RoleEnum.ADMIN))
         .and()
         .httpBasic()
         .and()

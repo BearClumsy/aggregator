@@ -12,20 +12,20 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "role", schema = "aggregator")
+@Table(name = "roles", schema = "aggregator")
 @Data
 @NoArgsConstructor
 public class Role {
   @Id
   @Column(name = "id", nullable = false, unique = true)
   @SequenceGenerator(
-      name = "role_id_seq",
-      sequenceName = "role_id_seq",
+      name = "roles_id_seq",
+      sequenceName = "roles_id_seq",
       schema = "aggregator",
       allocationSize = 1)
-  @GeneratedValue(generator = "role_id_seq", strategy = GenerationType.AUTO)
+  @GeneratedValue(generator = "roles_id_seq", strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "role")
+  @Column(name = "roles", nullable = false)
   private String role;
 }
