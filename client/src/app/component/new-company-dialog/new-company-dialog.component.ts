@@ -6,6 +6,8 @@ import {Address} from '../../model/address.model';
 import {Company} from '../../model/company.model';
 import {CompanyService} from '../../service/company.service';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {Location} from '@angular/common';
 
 export interface PeriodicElement {
   id: number;
@@ -28,6 +30,8 @@ export class NewCompanyDialogComponent implements OnInit {
   dataSource = new MatTableDataSource<PeriodicElement>(this.periodicElements);
 
   constructor(private dialogRef: MatDialogRef<NewCompanyDialogComponent>,
+              private router: Router,
+              private location: Location,
               private companyService: CompanyService) {
   }
 
@@ -77,6 +81,7 @@ export class NewCompanyDialogComponent implements OnInit {
       .subscribe(
         data => {
           this.dialogRef.close();
+          this.refreshCompanies();
         }
       );
   }
@@ -122,5 +127,11 @@ export class NewCompanyDialogComponent implements OnInit {
     const index = this.dataSource.data.indexOf(row);
     this.dataSource.data.splice(index, 1);
     this.dataSource._updateChangeSubscription();
+  }
+
+  private refreshCompanies(): void {
+    this.router.navigateByUrl('/CompaniesComponent', {skipLocationChange: true}).then(() => {
+      this.router.navigate([decodeURI(this.location.path())]).then();
+    });
   }
 }
