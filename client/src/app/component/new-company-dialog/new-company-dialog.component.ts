@@ -13,6 +13,7 @@ export interface PeriodicElement {
   id: number;
   city: string;
   address: string;
+  active: boolean;
 }
 
 @Component({
@@ -40,7 +41,8 @@ export class NewCompanyDialogComponent implements OnInit {
     this.periodicElements.push({
       id: 0,
       city: '',
-      address: ''
+      address: '',
+      active: true
     });
   }
 
@@ -62,19 +64,22 @@ export class NewCompanyDialogComponent implements OnInit {
       if (index > 0) {
         newAddresses[index - 1] = {
           city: value.city,
-          address: value.address
+          address: value.address,
+          active: value.active
         };
       }
     });
     newAddresses[newAddresses.length] = {
       city: this.city.value,
-      address: this.address.value
+      address: this.address.value,
+      active: true
     };
     const company: Company = {
       name: this.name.value,
       city: this.city.value,
       description: this.description.value,
-      addresses: newAddresses
+      addresses: newAddresses,
+      active: true
     };
     this.companyService.create(company)
       .pipe(first())
@@ -115,7 +120,8 @@ export class NewCompanyDialogComponent implements OnInit {
     this.periodicElements.push({
       id: this.periodicElements.length,
       city: this.city.value,
-      address: this.address.value
+      address: this.address.value,
+      active: true
     });
   }
 

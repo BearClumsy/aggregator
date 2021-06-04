@@ -18,12 +18,23 @@ import java.util.stream.Collectors;
 public class CompanyService {
   private final CompanyDao dao;
   private final CompanyValidator validator;
-  private final AddressService addressService;
+  private final UserService userService;
 
   public List<CompanyPayload> getCompanies() {
-    return dao.findAll().stream()
-        .map(CompanyService::mapCompanyToPayload)
-        .collect(Collectors.toList());
+    boolean isAdmin = userService.isAdmin();
+    List<CompanyPayload> companies;
+    if (isAdmin) {
+      companies =
+          dao.findAll().stream()
+              .map(CompanyService::mapCompanyToPayload)
+              .collect(Collectors.toList());
+    } else {
+      companies =
+          dao.findAllByActive(true).stream()
+              .map(CompanyService::mapCompanyToPayload)
+              .collect(Collectors.toList());
+    }
+    return companies;
   }
 
   public CompanyPayload create(CompanyPayload newCompany) {
@@ -48,11 +59,23 @@ public class CompanyService {
     return mapCompanyToPayload(saved);
   }
 
+  public CompanyPayload markAsDelete(CompanyPayload changes) {
+    Company company = mapCompanyPayloadToCompany(changes);
+    Optional<Company> existCompanyOptional = validator.isExist(company.getId());
+    if (existCompanyOptional.isEmpty()) {
+      return null;
+    }
+    company.setActive(false);
+    Company saved = dao.save(company);
+    return mapCompanyToPayload(saved);
+  }
+
   private Address mapAddressPayloadToAddress(AddressPayload addressPayload) {
     return Address.builder()
         .id(addressPayload.getId())
         .city(addressPayload.getCity())
         .address(addressPayload.getAddress())
+        .active(addressPayload.isActive())
         .build();
   }
 
@@ -67,6 +90,7 @@ public class CompanyService {
         .description(payload.getDescription())
         .name(payload.getName())
         .addresses(addresses)
+        .active(payload.isActive())
         .build();
   }
 
@@ -86,6 +110,7 @@ public class CompanyService {
         .id(address.getId())
         .city(address.getCity())
         .address(address.getAddress())
+        .active(address.isActive())
         .build();
   }
 
@@ -97,6 +122,7 @@ public class CompanyService {
         .city(company.getCity())
         .description(company.getDescription())
         .addresses(addressPayloads)
+        .active(company.isActive())
         .build();
   }
 }

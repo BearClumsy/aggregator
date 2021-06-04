@@ -1,11 +1,13 @@
 package dplatonov.portal.controller;
 
+import dplatonov.portal.annatation.Admin;
 import dplatonov.portal.payload.CompanyPayload;
 import dplatonov.portal.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,7 @@ public class CompanyController {
     return ResponseEntity.status(HttpStatus.OK).body(service.getCompanies());
   }
 
+  @Admin
   @PostMapping
   public ResponseEntity<CompanyPayload> create(@RequestBody CompanyPayload newCompany) {
     CompanyPayload companyPayload = service.create(newCompany);
@@ -36,9 +39,21 @@ public class CompanyController {
     return ResponseEntity.status(HttpStatus.OK).body(companyPayload);
   }
 
+  @Admin
   @PutMapping
   public ResponseEntity<CompanyPayload> update(@RequestBody CompanyPayload changes) {
     CompanyPayload companyPayload = service.update(changes);
+    if (Objects.isNull(companyPayload)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
+    return ResponseEntity.status(HttpStatus.OK).body(companyPayload);
+  }
+
+  @Admin
+  @PatchMapping
+  public ResponseEntity<CompanyPayload> markAsDelete(@RequestBody CompanyPayload changes) {
+    CompanyPayload companyPayload = service.markAsDelete(changes);
     if (Objects.isNull(companyPayload)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }

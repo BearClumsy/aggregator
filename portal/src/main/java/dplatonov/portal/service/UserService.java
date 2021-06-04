@@ -9,6 +9,8 @@ import dplatonov.portal.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +79,14 @@ public class UserService {
     User existUser = existOptionalUser.get();
     existUser.setActive(false);
     dao.save(existUser);
+  }
+
+  public boolean isAdmin() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String email = auth.getName();
+    User user = dao.findByEmail(email);
+    Role role = user.getRole();
+    return role.getRole().equals(RoleEnum.getRoleEnum(RoleEnum.ADMIN));
   }
 
   private static UserPayload mapUsersToPayloads(User user) {

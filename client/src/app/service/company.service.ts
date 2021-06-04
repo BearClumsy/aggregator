@@ -22,4 +22,8 @@ export class CompanyService {
   update(company: Company): Observable<Company> {
     return this.http.put<Company>('/api/company', company);
   }
+
+  delete(company: Company): Observable<Company> {
+    return this.http.patch<Company>('/api/company', company);
+  }
 }

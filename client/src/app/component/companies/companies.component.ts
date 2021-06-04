@@ -10,6 +10,7 @@ import {Company} from '../../model/company.model';
 import {Address} from '../../model/address.model';
 import {NewCompanyDialogComponent} from '../new-company-dialog/new-company-dialog.component';
 import {CompanyEditDialogComponent} from '../company-edit-dialog/company-edit-dialog.component';
+import {AuthService} from '../../service/auth.service';
 
 export interface PeriodicElement {
   position: number;
@@ -18,6 +19,7 @@ export interface PeriodicElement {
   city: string;
   description: string;
   addresses: Address[];
+  active: boolean;
 }
 
 @Component({
@@ -36,10 +38,14 @@ export class CompaniesComponent implements OnInit {
 
   constructor(private http: HttpClient,
               private dialog: MatDialog,
+              private authService: AuthService,
               private service: CompanyService) {
   }
 
   ngOnInit(): void {
+    if (this.isAdmin()) {
+      this.displayedColumns.push('active');
+    }
     this.service.getCompanies().pipe(map(res => {
       const periodicElements: PeriodicElement[] = [];
       res.forEach((value, index) => {
@@ -49,7 +55,8 @@ export class CompaniesComponent implements OnInit {
           name: value.name,
           city: value.city,
           description: value.description,
-          addresses: value.addresses
+          addresses: value.addresses,
+          active: value.active
         });
       });
       return periodicElements;
@@ -75,9 +82,19 @@ export class CompaniesComponent implements OnInit {
       city: row.city,
       description: row.description,
       name: row.name,
-      addresses: row.addresses
+      addresses: row.addresses,
+      active: row.active
     };
 
     this.dialog.open(CompanyEditDialogComponent, {disableClose: false, data: {pageValue: company}});
+  }
+
+  isAuthenticated(): boolean {
+    const currentUser = this.authService.currentUserValue;
+    return !!currentUser;
+  }
+
+  isAdmin(): boolean {
+    return this.authService.currentUserValue.role === 'admin';
   }
 }

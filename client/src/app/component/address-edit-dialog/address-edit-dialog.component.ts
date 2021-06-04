@@ -12,6 +12,7 @@ import {CompanyService} from '../../service/company.service';
 export interface PeriodicElement {
   city: string;
   address: string;
+  active: boolean;
 }
 
 @Component({
@@ -23,6 +24,7 @@ export class AddressEditDialogComponent implements OnInit {
   displayedColumns: string[] = ['city', 'address', 'action'];
   name = new FormControl();
   description = new FormControl();
+  active = new FormControl();
   city = new FormControl();
   address = new FormControl();
   dataSource!: MatTableDataSource<PeriodicElement>;
@@ -47,7 +49,8 @@ export class AddressEditDialogComponent implements OnInit {
     this.data.addresses.forEach((value, index) => {
       periodicElements.push({
         city: value.city,
-        address: value.address
+        address: value.address,
+        active: value.active
       });
     });
     this.dataSource = new MatTableDataSource<PeriodicElement>(periodicElements);
@@ -74,20 +77,23 @@ export class AddressEditDialogComponent implements OnInit {
       if (index > 0) {
         newAddresses[index - 1] = {
           city: value.city,
-          address: value.address
+          address: value.address,
+          active: value.active
         };
       }
     });
     newAddresses[newAddresses.length] = {
       city: this.city.value,
-      address: this.address.value
+      address: this.address.value,
+      active: true
     };
     const company: Company = {
       id: this.id,
       name: this.name.value,
       city: this.city.value,
       description: this.description.value,
-      addresses: newAddresses
+      addresses: newAddresses,
+      active: this.active.value
     };
     this.companyService.update(company)
       .pipe(first())
@@ -136,7 +142,8 @@ export class AddressEditDialogComponent implements OnInit {
     const tmpData = this.dataSource.data;
     tmpData.push({
       city: this.city.value,
-      address: this.address.value
+      address: this.address.value,
+      active: true
     });
     this.dataSource.data = tmpData;
   }

@@ -52,4 +52,7 @@ public class Company {
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
   private List<Address> addresses;
+
+  @Column(name = "active", nullable = false)
+  private boolean active;
 }

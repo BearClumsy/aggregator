@@ -40,4 +40,7 @@ public class Address {
 
   @Column(name = "address", nullable = false)
   private String address;
+
+  @Column(name = "active", nullable = false)
+  private boolean active;
 }

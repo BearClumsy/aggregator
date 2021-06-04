@@ -6,4 +6,5 @@ export interface Company {
   city: string;
   description: string;
   addresses: Address[];
+  active: boolean;
 }

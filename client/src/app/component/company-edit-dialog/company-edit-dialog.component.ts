@@ -5,12 +5,18 @@ import {MatSort} from '@angular/material/sort';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Company} from '../../model/company.model';
 import {AddressEditDialogComponent} from '../address-edit-dialog/address-edit-dialog.component';
+import {first} from 'rxjs/operators';
+import {CompanyService} from '../../service/company.service';
+import {Router} from '@angular/router';
+import {Location} from '@angular/common';
+import {AuthService} from '../../service/auth.service';
 
 export interface PeriodicElement {
   position: number;
   id?: number;
   city: string;
   address: string;
+  active: boolean;
 }
 
 @Component({
@@ -30,17 +36,25 @@ export class CompanyEditDialogComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<CompanyEditDialogComponent>,
               private dialog: MatDialog,
+              private companyService: CompanyService,
+              private router: Router,
+              private location: Location,
+              private authService: AuthService,
               @Optional() @Inject(MAT_DIALOG_DATA) data: { pageValue: Company }) {
     this.data = data;
   }
 
   ngOnInit(): void {
+    if (this.isAdmin()) {
+      this.displayedColumns.push('active');
+    }
     this.data.pageValue.addresses.forEach((value, index) => {
       this.periodicElements.push({
         position: index,
         id: value.id,
         city: value.city,
-        address: value.address
+        address: value.address,
+        active: value.active
       });
     });
 
@@ -65,10 +79,40 @@ export class CompanyEditDialogComponent implements OnInit {
   }
 
   onDelete(): void {
-    this.dialogRef.close();
+    const company: Company = {
+      addresses: this.data.pageValue.addresses,
+      city: this.data.pageValue.city,
+      description: this.data.pageValue.description,
+      id: this.data.pageValue.id,
+      name: this.data.pageValue.name,
+      active: false
+    };
+    this.companyService.delete(company)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.dialogRef.close();
+          this.refreshCompanies();
+        }
+      );
   }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  private refreshCompanies(): void {
+    this.router.navigateByUrl('/CompaniesComponent', {skipLocationChange: true}).then(() => {
+      this.router.navigate([decodeURI(this.location.path())]).then();
+    });
+  }
+
+  isAuthenticated(): boolean {
+    const currentUser = this.authService.currentUserValue;
+    return !!currentUser;
+  }
+
+  isAdmin(): boolean {
+    return this.authService.currentUserValue.role === 'admin';
   }
 }

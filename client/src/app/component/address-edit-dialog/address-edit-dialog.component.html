@@ -19,6 +19,12 @@
           </label>
           <mat-error *ngIf="description.invalid">{{getDescriptionErrorMessage()}}</mat-error>
         </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Active" [formControl]="active">
+            <mat-option value="true">TRUE</mat-option>
+            <mat-option value="false">FALSE</mat-option>
+          </mat-select>
+        </mat-form-field>
         <table mat-table
                [dataSource]="dataSource"
                matSort
