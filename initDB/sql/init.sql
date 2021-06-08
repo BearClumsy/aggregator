@@ -48,7 +48,8 @@ create table if not exists aggregator.company
             primary key,
     name        varchar   not null,
     city        varchar   not null,
-    description varchar
+    description varchar,
+    active      boolean default true not null
 );
 
 alter table aggregator.company

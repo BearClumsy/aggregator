@@ -15,7 +15,4 @@ public class AddressPayload {
 
   @NotEmpty(message = "Address cannot be empty or null")
   private String address;
-
-  @NotEmpty(message = "Active cannot be empty or null")
-  private boolean active;
 }

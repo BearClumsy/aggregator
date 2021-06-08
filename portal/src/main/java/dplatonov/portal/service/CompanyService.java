@@ -75,7 +75,6 @@ public class CompanyService {
         .id(addressPayload.getId())
         .city(addressPayload.getCity())
         .address(addressPayload.getAddress())
-        .active(addressPayload.isActive())
         .build();
   }
 
@@ -110,7 +109,6 @@ public class CompanyService {
         .id(address.getId())
         .city(address.getCity())
         .address(address.getAddress())
-        .active(address.isActive())
         .build();
   }
 

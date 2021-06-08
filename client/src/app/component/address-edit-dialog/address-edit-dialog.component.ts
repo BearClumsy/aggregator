@@ -71,7 +71,7 @@ export class AddressEditDialogComponent implements OnInit {
     const company: Company = {
       id: this.id,
       name: this.name.value,
-      city: this.city.value,
+      city: this.data.city,
       description: this.description.value,
       addresses: newAddresses,
       active: this.active.value
