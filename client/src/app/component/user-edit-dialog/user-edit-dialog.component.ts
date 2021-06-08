@@ -34,8 +34,8 @@ export class UserEditDialogComponent implements OnInit {
     this.email.setValue(this.user.email);
     this.login.setValue(this.user.login);
     this.password.setValue(this.user.password);
-    this.role.setValue(this.role.value);
-    this.active.setValue(this.active.value);
+    this.role.setValue(this.user.role);
+    this.active.setValue(this.user.active);
   }
 
   onSubmit(): void {
