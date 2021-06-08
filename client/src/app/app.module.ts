@@ -38,6 +38,7 @@ import {UserEditDialogComponent} from './component/user-edit-dialog/user-edit-di
 import {NewCompanyDialogComponent} from './component/new-company-dialog/new-company-dialog.component';
 import {CompanyEditDialogComponent} from './component/company-edit-dialog/company-edit-dialog.component';
 import {AddressEditDialogComponent} from './component/address-edit-dialog/address-edit-dialog.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import {AddressEditDialogComponent} from './component/address-edit-dialog/addres
     MatSortModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    DragDropModule
   ],
   exports: [MatFormFieldModule, MatInputModule],
   providers: [

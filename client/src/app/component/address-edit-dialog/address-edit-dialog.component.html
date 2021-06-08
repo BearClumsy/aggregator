@@ -21,8 +21,8 @@
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Active" [formControl]="active">
-            <mat-option value="true">TRUE</mat-option>
-            <mat-option value="false">FALSE</mat-option>
+            <mat-option [value]="true">TRUE</mat-option>
+            <mat-option [value]="false">FALSE</mat-option>
           </mat-select>
         </mat-form-field>
         <table mat-table
@@ -36,7 +36,7 @@
             <td mat-cell *matCellDef="let element">
               <mat-form-field class="example-full-width">
                 <label>
-                  <input matInput placeholder="Enter city" [formControl]="city" required [value]=element.city>
+                  <input matInput placeholder="Enter city" required [ngModelOptions]="{standalone: true}" [(ngModel)]="element.city">
                 </label>
                 <mat-error *ngIf="description.invalid">{{getCityErrorMessage()}}</mat-error>
               </mat-form-field>
@@ -47,7 +47,7 @@
             <td mat-cell *matCellDef="let element">
               <mat-form-field class="example-full-width">
                 <label>
-                  <input matInput placeholder="Enter address" [formControl]="address" required [value]=element.address>
+                  <input matInput placeholder="Enter address" required [ngModelOptions]="{standalone: true}" [(ngModel)]="element.address">
                 </label>
                 <mat-error *ngIf="description.invalid">{{getAddressErrorMessage()}}</mat-error>
               </mat-form-field>

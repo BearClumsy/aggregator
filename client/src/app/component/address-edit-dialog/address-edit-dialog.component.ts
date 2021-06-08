@@ -28,7 +28,7 @@ export class AddressEditDialogComponent implements OnInit {
   city = new FormControl();
   address = new FormControl();
   dataSource!: MatTableDataSource<PeriodicElement>;
-  private readonly data;
+  data: Company;
   private pageSize = 5;
   private id?: number;
 
@@ -45,8 +45,9 @@ export class AddressEditDialogComponent implements OnInit {
     this.id = this.data.id;
     this.name.setValue(this.data.name);
     this.description.setValue(this.data.description);
+    this.active.setValue(this.data.active);
     const periodicElements: PeriodicElement[] = [];
-    this.data.addresses.forEach((value, index) => {
+    this.data.addresses.forEach(value => {
       periodicElements.push({
         city: value.city,
         address: value.address,
@@ -66,27 +67,19 @@ export class AddressEditDialogComponent implements OnInit {
     if (!this.description.value) {
       return;
     }
-    if (!this.city.value) {
-      return;
-    }
-    if (!this.address.value) {
-      return;
-    }
-    const newAddresses: Address[] = [];
-    this.dataSource.data.forEach((value, index) => {
-      if (index > 0) {
-        newAddresses[index - 1] = {
-          city: value.city,
-          address: value.address,
-          active: value.active
-        };
-      }
-    });
-    newAddresses[newAddresses.length] = {
-      city: this.city.value,
-      address: this.address.value,
-      active: true
-    };
+    const newAddresses: Address[] = this.dataSource.data;
+    // this.dataSource.data.forEach((value, index) => {
+    //   newAddresses[index - 1] = {
+    //     city: value.city,
+    //     address: value.address,
+    //     active: value.active
+    //   };
+    // });
+    // newAddresses[newAddresses.length] = {
+    //   city: this.city.value,
+    //   address: this.address.value,
+    //   active: true
+    // };
     const company: Company = {
       id: this.id,
       name: this.name.value,

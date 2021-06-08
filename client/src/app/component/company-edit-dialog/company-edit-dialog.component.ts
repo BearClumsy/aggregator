@@ -29,7 +29,7 @@ export class CompanyEditDialogComponent implements OnInit {
   private periodicElements: PeriodicElement[] = [];
   dataSource = new MatTableDataSource<PeriodicElement>(this.periodicElements);
   private pageSize = 10;
-  private data;
+  company: Company;
 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
@@ -41,14 +41,14 @@ export class CompanyEditDialogComponent implements OnInit {
               private location: Location,
               private authService: AuthService,
               @Optional() @Inject(MAT_DIALOG_DATA) data: { pageValue: Company }) {
-    this.data = data;
+    this.company = data.pageValue;
   }
 
   ngOnInit(): void {
     if (this.isAdmin()) {
       this.displayedColumns.push('active');
     }
-    this.data.pageValue.addresses.forEach((value, index) => {
+    this.company.addresses.forEach((value, index) => {
       this.periodicElements.push({
         position: index,
         id: value.id,
@@ -74,23 +74,22 @@ export class CompanyEditDialogComponent implements OnInit {
   }
 
   onEdit(): void {
-    this.dialog.open(AddressEditDialogComponent, {data: this.data.pageValue});
+    this.dialog.open(AddressEditDialogComponent, {data: this.company});
     this.dialogRef.close();
   }
 
   onDelete(): void {
     const company: Company = {
-      addresses: this.data.pageValue.addresses,
-      city: this.data.pageValue.city,
-      description: this.data.pageValue.description,
-      id: this.data.pageValue.id,
-      name: this.data.pageValue.name,
+      addresses: this.company.addresses,
+      city: this.company.city,
+      description: this.company.description,
+      id: this.company.id,
+      name: this.company.name,
       active: false
     };
     this.companyService.delete(company)
       .pipe(first())
-      .subscribe(
-        data => {
+      .subscribe(() => {
           this.dialogRef.close();
           this.refreshCompanies();
         }
