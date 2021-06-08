@@ -9,7 +9,7 @@ export class AuthService {
   private loginUrl = '/api/login';
   public registrationUrl = '/api/registration';
   private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  currentUser: Observable<User>;
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser') as string));

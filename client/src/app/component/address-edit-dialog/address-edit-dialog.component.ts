@@ -68,18 +68,6 @@ export class AddressEditDialogComponent implements OnInit {
       return;
     }
     const newAddresses: Address[] = this.dataSource.data;
-    // this.dataSource.data.forEach((value, index) => {
-    //   newAddresses[index - 1] = {
-    //     city: value.city,
-    //     address: value.address,
-    //     active: value.active
-    //   };
-    // });
-    // newAddresses[newAddresses.length] = {
-    //   city: this.city.value,
-    //   address: this.address.value,
-    //   active: true
-    // };
     const company: Company = {
       id: this.id,
       name: this.name.value,

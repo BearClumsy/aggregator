@@ -6,6 +6,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {AboutComponent} from '../about/about.component';
 import {AuthService} from '../../service/auth.service';
+import {User} from '../../model/user.model';
 
 @Component({
   selector: 'app-navigation',
@@ -21,16 +22,16 @@ export class NavigationComponent implements OnInit {
 
   @Input() visible = false;
   @Output() toggle: EventEmitter<boolean> = new EventEmitter<boolean>();
-  username = '';
+  username$: Observable<string>;
 
   constructor(private breakpointObserver: BreakpointObserver,
               public dialog: MatDialog,
               private authService: AuthService,
               private router: Router) {
+    this.username$ = this.authService.currentUser.pipe(map((user: User) => user?.email));
   }
 
   ngOnInit(): void {
-    this.username = this.authService.currentUserValue.email;
   }
 
   isAuthenticated(): boolean {

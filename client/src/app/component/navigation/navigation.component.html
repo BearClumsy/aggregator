@@ -17,7 +17,7 @@
         <div *ngIf="isAuthenticated()" class="hide">
           <mat-icon class="userIcon" style="margin-top: 10px">perm_identity</mat-icon>
         </div>
-        <span class="userText">{{username}}</span>
+        <span class="userText">{{username$ | async}}</span>
         <button *ngIf="isAuthenticated()" class="nav_button" mat-button="" (click)="logout()"
                 matTooltip="logout">
           <mat-icon>power_settings_new</mat-icon>
