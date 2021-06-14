@@ -7,4 +7,4 @@ VALUES ('admin', 'admin', 'admin@test.com', '$2a$10$qNIZHEGD8CBX6NyGJ4GSjuPO5.gK
         'tester');
 
 insert into aggregator.config (scanner_page_num)
-values (20);
+values (2);

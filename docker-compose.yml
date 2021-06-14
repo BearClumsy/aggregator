@@ -9,7 +9,7 @@ services:
       - 5432
     ports:
       - 5432:5432
-    restart: unless-stopped
+    restart: always
     environment:
       - POSTGRES_PASSWORD=pd_aggregator
       - POSTGRES_USER=pd_aggregator
@@ -19,7 +19,7 @@ services:
     image: portal:latest
     container_name: portal
     build: portal
-    restart: unless-stopped
+    restart: always
     links:
       - "postgres:database"
     expose:
@@ -31,7 +31,7 @@ services:
     image: client:latest
     container_name: client
     build: client
-    restart: unless-stopped
+    restart: always
     depends_on:
       - portal
     links:
@@ -44,7 +44,7 @@ services:
   hub:
     image: selenium/hub
     container_name: hub
-    restart: unless-stopped
+    restart: always
     ports:
       - "4444:4444"
     environment:
@@ -55,7 +55,7 @@ services:
   firefox:
     image: selenium/node-firefox
     container_name: firefox
-    restart: unless-stopped
+    restart: always
     depends_on:
       - hub
     environment:
@@ -81,7 +81,7 @@ services:
       - 8082
     ports:
       - 8082:8082
-    restart: unless-stopped
+    restart: always
 
 volumes:
   postgres-data:

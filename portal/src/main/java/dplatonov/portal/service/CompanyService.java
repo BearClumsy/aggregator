@@ -5,7 +5,7 @@ import dplatonov.portal.entity.Address;
 import dplatonov.portal.entity.Company;
 import dplatonov.portal.payload.AddressPayload;
 import dplatonov.portal.payload.CompanyPayload;
-import dplatonov.portal.validate.CompanyValidator;
+import dplatonov.portal.validator.CompanyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

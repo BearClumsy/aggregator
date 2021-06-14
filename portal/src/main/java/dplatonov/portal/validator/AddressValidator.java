@@ -1,4 +1,4 @@
-package dplatonov.portal.validate;
+package dplatonov.portal.validator;
 
 import dplatonov.portal.dao.AddressDao;
 import dplatonov.portal.entity.Address;

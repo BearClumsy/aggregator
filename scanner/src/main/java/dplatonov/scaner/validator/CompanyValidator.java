@@ -1,7 +1,7 @@
-package dplatonov.portal.validate;
+package dplatonov.scaner.validator;
 
-import dplatonov.portal.dao.CompanyDao;
-import dplatonov.portal.entity.Company;
+import dplatonov.scaner.dao.CompanyDao;
+import dplatonov.scaner.entity.Company;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,17 +12,8 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class CompanyValidator {
-  private static final Logger log = LoggerFactory.getLogger(UserValidator.class);
+  private static final Logger log = LoggerFactory.getLogger(CompanyValidator.class);
   private final CompanyDao dao;
-
-  public Optional<Company> isExist(Long id) {
-    Optional<Company> existCompanyOptional = dao.findById(id);
-    if (existCompanyOptional.isEmpty()) {
-      log.warn("COMPANY-VALIDATOR-001: Company with id " + id + " is not exist");
-    }
-
-    return existCompanyOptional;
-  }
 
   public Optional<Company> isExist(String name) {
     Optional<Company> existCompanyOptional = dao.findByName(name);

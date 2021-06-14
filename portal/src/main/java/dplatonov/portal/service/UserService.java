@@ -5,7 +5,7 @@ import dplatonov.portal.entity.Role;
 import dplatonov.portal.entity.User;
 import dplatonov.portal.enums.RoleEnum;
 import dplatonov.portal.payload.UserPayload;
-import dplatonov.portal.validate.UserValidator;
+import dplatonov.portal.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

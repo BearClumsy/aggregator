@@ -3,10 +3,11 @@ package dplatonov.scaner;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import dplatonov.scaner.dao.CompanyDAO;
+import dplatonov.scaner.dao.CompanyDao;
 import dplatonov.scaner.dao.ConfigDao;
 import dplatonov.scaner.entity.Address;
 import dplatonov.scaner.entity.Company;
+import dplatonov.scaner.validator.CompanyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -38,8 +40,9 @@ import static com.codeborne.selenide.Selenide.open;
 public class Parser {
   private static final Logger log = LogManager.getLogger(Parser.class);
   private static final String URL = "https://jobs.dou.ua/companies/";
-  private final CompanyDAO companyDAO;
+  private final CompanyDao companyDAO;
   private final ConfigDao configDao;
+  private final CompanyValidator companyValidator;
   public static final String REMOTE_URL_FIREFOX = "http://hub:4444/wd/hub";
   private RemoteWebDriver remoteWebDriver;
 
@@ -48,8 +51,7 @@ public class Parser {
     config();
     open(URL);
     downloadPages();
-    ArrayList<Company> companies = pars();
-    save(companies);
+    pars();
     closeWebDriver();
   }
 
@@ -60,12 +62,12 @@ public class Parser {
       remoteWebDriver.manage().window().maximize();
       WebDriverRunner.setWebDriver(remoteWebDriver);
     } catch (MalformedURLException e) {
-      log.info("Can't connect to remote web driver");
+      log.info("PARSER-001: Can't connect to remote web driver");
     }
   }
 
   private void downloadPages() {
-    log.info("Start download HTML");
+    log.info("PARSER-002: Start download HTML");
     int countOfPage = configDao.findAll().get(0).getScannerPageNum();
     IntStream.range(0, countOfPage)
         .forEach(
@@ -74,14 +76,14 @@ public class Parser {
                 Thread.sleep(1000);
                 $(By.linkText("Больше компаний")).click();
               } catch (InterruptedException e) {
-                log.error("HTML download is interrupted! " + e);
+                log.error("PARSER-003: HTML download is interrupted! " + e);
               }
             });
-    log.info("Download HTML is complete");
+    log.info("PARSER-004: Download HTML is complete");
   }
 
   private ArrayList<Company> pars() {
-    log.info("Start HTML parsing!");
+    log.info("PARSER-005: Start HTML parsing!");
     ArrayList<Company> companies = new ArrayList<>();
     ElementsCollection company = $$(By.className("l-items")).get(0).$$(By.className("company"));
     int size = company.size();
@@ -99,7 +101,7 @@ public class Parser {
               String cities = el.$(By.className("city")).text();
               String description = el.$(By.className("descr")).text();
               ArrayList<Address> addresses = downloadAndParsOfficesForCurrentCompany(el);
-              companies.add(
+              save(
                   Company.builder()
                       .name(name)
                       .city(cities)
@@ -108,7 +110,7 @@ public class Parser {
                       .build());
             });
 
-    log.info("HTML parsing is complete!");
+    log.info("PARSER-006: HTML parsing is complete!");
 
     return companies;
   }
@@ -122,7 +124,7 @@ public class Parser {
     try {
       Thread.sleep(5000);
     } catch (InterruptedException e) {
-      log.warn("Application was interrupted when scroll down to link");
+      log.warn("PARSER-007: Application was interrupted when scroll down to link");
     }
     actions.keyDown(Keys.CONTROL).click(officesLink).keyUp(Keys.CONTROL).build().perform();
     ArrayList<String> tabs = new ArrayList<>(this.remoteWebDriver.getWindowHandles());
@@ -130,7 +132,7 @@ public class Parser {
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
-      log.warn("Application was interrupted when scroll down to link");
+      log.warn("PARSER-008: Application was interrupted when scroll down to link");
     }
     ElementsCollection cityEl = $$(By.className("city"));
     for (SelenideElement el : cityEl) {
@@ -149,14 +151,20 @@ public class Parser {
     return addresses;
   }
 
-  private void save(List<Company> companies) {
-    log.info("Founded companies start save in to PostgreSQL");
-    companyDAO.saveAll(companies);
-    log.info("Founded companies is saved in PostgreSQL");
+  private void save(Company company) {
+    String companyName = company.getName();
+    Optional<Company> exist = companyValidator.isExist(companyName);
+    if (exist.isPresent()) {
+      log.warn("PARSER-009: Company with name " + companyName + " is exist!");
+      return;
+    }
+    log.info("PARSER-010: Founded company start save in to PostgreSQL");
+    companyDAO.save(company);
+    log.info("PARSER-011: Founded company is saved in PostgreSQL");
   }
 
   private void closeWebDriver() {
     WebDriverRunner.closeWebDriver();
-    log.info("Web Driver is closed success");
+    log.info("PARSER-012: Web Driver is closed success");
   }
 }
