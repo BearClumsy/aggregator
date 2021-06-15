@@ -26,7 +26,7 @@ export class UserEditDialogComponent implements OnInit {
               private userService: UserService,
               private router: Router,
               private location: Location,
-              @Optional() @Inject(MAT_DIALOG_DATA) private data: {pageValue: User}
+              @Optional() @Inject(MAT_DIALOG_DATA) private data: { pageValue: User }
   ) {
     this.user = data.pageValue;
     this.firstName.setValue(this.user.firstName);
@@ -57,9 +57,6 @@ export class UserEditDialogComponent implements OnInit {
     if (!this.role.value) {
       return;
     }
-    if (!this.active.value) {
-      return;
-    }
 
     const user: User = {
       id: this.user.id,
@@ -73,8 +70,7 @@ export class UserEditDialogComponent implements OnInit {
     };
     this.userService.update(user)
       .pipe(first())
-      .subscribe(
-        data => {
+      .subscribe(() => {
           this.dialogRef.close();
           this.refreshUsers();
         }
@@ -128,9 +124,10 @@ export class UserEditDialogComponent implements OnInit {
   }
 
   delete(): void {
-    this.userService.delete(this.user.id);
-    this.dialogRef.close();
-    this.refreshUsers();
+    this.userService.delete(this.user.id).subscribe(() => {
+      this.dialogRef.close();
+      this.refreshUsers();
+    });
   }
 
   refreshUsers(): void {
