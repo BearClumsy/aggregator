@@ -91,3 +91,60 @@ alter table aggregator.config
 
 create unique index config_id_uindex
     on aggregator.config (id);
+
+create table aggregator.scanner_configs
+(
+    id      bigint                not null
+        constraint scanner_configs_pk
+            primary key,
+    name    varchar(48)           not null,
+    url     varchar(100)          not null,
+    user_id bigint                not null
+        constraint scanner_configs_user_id_fk
+            references aggregator.users,
+    active  boolean default false not null
+);
+
+comment on table aggregator.scanner_configs is 'Configuration of scanner';
+
+comment on column aggregator.scanner_configs.id is 'Index of scanner onfig';
+
+comment on column aggregator.scanner_configs.name is 'Name of scanner';
+
+comment on column aggregator.scanner_configs.url is 'Basic path to search page';
+
+comment on column aggregator.scanner_configs.active is 'The status of scanner config';
+
+alter table aggregator.scanner_configs
+    owner to pd_aggregator;
+
+create table aggregator.scanner_steps
+(
+    id                 bigint                not null
+        constraint scanner_steps_pk
+            primary key,
+    tag                varchar(48)           not null,
+    type               varchar(48)           not null,
+    action             varchar(48)           not null,
+    active             boolean default false not null,
+    scanner_configs_id bigint                not null
+        constraint scanner_steps_scanner_configs_id_fk
+            references aggregator.scanner_configs
+);
+
+comment on table aggregator.scanner_steps is 'Steps of queue of tags to find out the data';
+
+comment on column aggregator.scanner_steps.id is 'Index of step';
+
+comment on column aggregator.scanner_steps.tag is 'The name of tag';
+
+comment on column aggregator.scanner_steps.type is 'The type of tag';
+
+comment on column aggregator.scanner_steps.action is 'The action of tag';
+
+comment on column aggregator.scanner_steps.active is 'Status of step';
+
+alter table aggregator.scanner_steps
+    owner to pd_aggregator;
+
+

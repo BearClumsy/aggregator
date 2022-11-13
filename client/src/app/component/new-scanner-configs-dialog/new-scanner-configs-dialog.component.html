@@ -1,6 +1,6 @@
 <div fxLayoutGap="20px">
   <div class="modal-header" fxLayout="column" fxLayoutAlign="center center">
-    <span style="font: 25px bold">New Company</span>
+    <span style="font: 25px bold">New Scanner Configs</span>
   </div>
   <div class="modal-content" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
     <form fxLayout="column" fxLayoutAlign="start stretch"
@@ -9,15 +9,15 @@
            fxLayoutGap="10px">
         <mat-form-field>
           <label>
-            <input matInput placeholder="Enter company Name" [formControl]="name" required>
+            <input matInput placeholder="Enter Scanner Name" [formControl]="name" required>
           </label>
           <mat-error *ngIf="name.invalid">{{getNameErrorMessage()}}</mat-error>
         </mat-form-field>
         <mat-form-field>
           <label>
-            <input matInput placeholder="Enter description" [formControl]="description" required>
+            <input matInput placeholder="Enter URL" [formControl]="url" required>
           </label>
-          <mat-error *ngIf="description.invalid">{{getDescriptionErrorMessage()}}</mat-error>
+          <mat-error *ngIf="url.invalid">{{getUrlErrorMessage()}}</mat-error>
         </mat-form-field>
         <table mat-table
                [dataSource]="dataSource"
@@ -25,30 +25,51 @@
                cdkDropList
                cdkDropListOrientation="horizontal"
                style="width: 100%">
-          <ng-container matColumnDef="city">
-            <th mat-header-cell *matHeaderCellDef> City</th>
+          <ng-container matColumnDef="tag">
+            <th mat-header-cell *matHeaderCellDef> Tag </th>
             <td mat-cell *matCellDef="let element">
               <mat-form-field class="example-full-width">
                 <label>
-                  <input matInput placeholder="Enter city" [formControl]="city" required>
+                  <input matInput placeholder="Enter tag" [formControl]="tag" required>
                 </label>
-                <mat-error *ngIf="description.invalid">{{getCityErrorMessage()}}</mat-error>
+                <mat-error *ngIf="tag.invalid">{{getTagErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>
           </ng-container>
-          <ng-container matColumnDef="address">
-            <th mat-header-cell *matHeaderCellDef> Address</th>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
             <td mat-cell *matCellDef="let element">
               <mat-form-field class="example-full-width">
                 <label>
-                  <input matInput placeholder="Enter address" [formControl]="address" required>
+                  <input matInput placeholder="Enter type" [formControl]="type" required>
                 </label>
-                <mat-error *ngIf="description.invalid">{{getAddressesErrorMessage()}}</mat-error>
+                <mat-error *ngIf="type.invalid">{{getTypeErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>
           </ng-container>
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="example-full-width">
+                <label>
+                  <input matInput placeholder="Enter type" [formControl]="action" required>
+                </label>
+                <mat-error *ngIf="action.invalid">{{getActionErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef> Value </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field class="example-full-width">
+                <label>
+                  <input matInput placeholder="Enter type" [formControl]="value">
+                </label>
+              </mat-form-field>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef> Delete </th>
             <td mat-cell *matCellDef="let element">
               <div style="height: 60px">
                 <br>
@@ -61,11 +82,12 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
       </div>
       <div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
-        <button mat-button color="primary" fxFlex value="bold" (click)="addNewAddress()">
+        <button mat-button color="primary" fxFlex value="bold" (click)="addNewStep()">
           <mat-icon>add</mat-icon>
-          Add new Address
+          Add new Step to Queue
         </button>
       </div>
       <mat-divider></mat-divider>

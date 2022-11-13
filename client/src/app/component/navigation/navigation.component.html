@@ -36,7 +36,8 @@
       <a mat-list-item (click)="openUsers(); toggleOverlay(drawer.toggle());"
          *ngIf="isAuthenticated() && isAdmin()"
          class="hide">Users</a>
-      <a mat-list-item (click)="openCompanies(); toggleOverlay(drawer.toggle());">Companies</a>
+<!--      <a mat-list-item (click)="openCompanies(); toggleOverlay(drawer.toggle());">Companies</a>-->
+      <a mat-list-item (click)="openScannerConfigs(); toggleOverlay(drawer.toggle());">Scanner-options</a>
       <a mat-list-item (click)="about(); toggleOverlay(drawer.toggle());">About</a>
       <a mat-list-item style="margin-top: 100px" href="https://angular.io/" target="_blank"
          (click)="toggleOverlay(drawer.toggle())">Angular</a>

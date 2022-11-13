@@ -61,6 +61,10 @@ export class NavigationComponent implements OnInit {
     this.router.navigate(['/companies']).then();
   }
 
+  openScannerConfigs(): void {
+    this.router.navigate(['/scanner-configs']).then();
+  }
+
   about(): void {
     this.dialog.open(AboutComponent, {disableClose: false});
   }

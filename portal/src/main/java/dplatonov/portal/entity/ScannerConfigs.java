@@ -17,52 +17,46 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "company", schema = "aggregator")
+@Table(name = "scanner_configs", schema = "aggregator")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-@DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class Company {
+public class ScannerConfigs {
+
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "scanner_configs_seq")
+  @SequenceGenerator(name = "scanner_configs_seq", sequenceName = "scanner_configs_seq", schema = "aggregator", allocationSize = 1)
   @Column(name = "id", nullable = false, unique = true)
-  @SequenceGenerator(
-      name = "company_id_seq",
-      sequenceName = "company_id_seq",
-      schema = "aggregator",
-      allocationSize = 1)
-  @GeneratedValue(generator = "company_id_seq", strategy = GenerationType.AUTO)
   private Long id;
 
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "city")
-  private String city;
-
-  @Column(name = "description")
-  private String description;
-
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "company_id")
-  @Exclude
-  private List<Address> addresses;
+  @Column(name = "url", nullable = false)
+  private String url;
 
   @Column(name = "active", nullable = false)
-  private boolean active;
+  private Boolean active;
+
+  @Column(name = "user_id", nullable = false)
+  private Long userId;
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  @JoinColumn(name = "scanner_configs_id")
+  @Exclude
+  private List<ScannerSteps> scannerSteps;
 
   @Override
   public boolean equals(Object o) {
@@ -72,8 +66,8 @@ public class Company {
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
       return false;
     }
-    Company company = (Company) o;
-    return id != null && Objects.equals(id, company.id);
+    ScannerConfigs that = (ScannerConfigs) o;
+    return id != null && Objects.equals(id, that.id);
   }
 
   @Override

@@ -39,6 +39,10 @@ import {NewCompanyDialogComponent} from './component/new-company-dialog/new-comp
 import {CompanyEditDialogComponent} from './component/company-edit-dialog/company-edit-dialog.component';
 import {AddressEditDialogComponent} from './component/address-edit-dialog/address-edit-dialog.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import { ScannerConfigsComponent } from './component/scanner-configs/scanner-configs.component';
+import { NewScannerConfigsDialogComponent } from './component/new-scanner-configs-dialog/new-scanner-configs-dialog.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { ScannerConfigsEditDialogComponent } from './component/scanner-configs-edit-dialog/scanner-configs-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +57,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     UserEditDialogComponent,
     NewCompanyDialogComponent,
     CompanyEditDialogComponent,
-    AddressEditDialogComponent
+    AddressEditDialogComponent,
+    ScannerConfigsComponent,
+    NewScannerConfigsDialogComponent,
+    ScannerConfigsEditDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -77,7 +84,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    DragDropModule
+    DragDropModule,
+    MatProgressBarModule
   ],
   exports: [MatFormFieldModule, MatInputModule],
   providers: [

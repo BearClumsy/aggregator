@@ -34,6 +34,10 @@ public class UserService {
     return mapUsersToPayloads(dao.findByEmail(email));
   }
 
+  public User getUserById(Long id) {
+    return dao.findById(id).orElse(User.builder().build());
+  }
+
   public UserPayload createUser(UserPayload userPayload) {
     Optional<Role> optionalRole = userValidator.validateRole(userPayload.getRole());
     Optional<User> existOptionalUser = userValidator.validateByLogin(userPayload.getLogin());

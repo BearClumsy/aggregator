@@ -14,18 +14,18 @@ This sample requires you to have
 .
 
 ##Install Docker
-On the next step install [Docker](https://docs.docker.com/get-docker/)
+On the next scannerStepPayload install [Docker](https://docs.docker.com/get-docker/)
 .
 
 ##Install Python
-On the next step install [Python](https://docs.python.org/3/using/windows.html)
+On the next scannerStepPayload install [Python](https://docs.python.org/3/using/windows.html)
 version 3.9.5.
 
 Install psycopg2 for working with PostgreSQL
 `pip install psycopg2`.
 
 ## Build portal
-On the next step build portal by command bellow
+On the next scannerStepPayload build portal by command bellow
 
 `gradlew clean build`
 .
@@ -39,7 +39,7 @@ Then build scanner by command bellow
 `docker compose up -d postgres`
 
 ## Init DB tables and data
-Next step we need create db tables and create default admin account
+Next scannerStepPayload we need create db tables and create default admin account
 `cd initDB`
 `pytyhon inid.py`
 
