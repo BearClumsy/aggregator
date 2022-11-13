@@ -43,7 +43,7 @@ public class Parser {
   private final CompanyDao companyDAO;
   private final ConfigDao configDao;
   private final CompanyValidator companyValidator;
-  public static final String REMOTE_URL_FIREFOX = "http://hub:4444/wd/hub";
+  public static final String REMOTE_URL_FIREFOX = "http://selenium-hub:4444/wd/hub/";
   private RemoteWebDriver remoteWebDriver;
 
   @Scheduled(fixedDelay = 3600000) // once in day

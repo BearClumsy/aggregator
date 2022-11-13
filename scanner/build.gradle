@@ -25,7 +25,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    compile 'com.codeborne:selenide:5.18.0'
+    implementation 'com.codeborne:selenide:6.9.0'
 }
 
 test {
