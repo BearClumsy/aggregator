@@ -11,8 +11,9 @@ public enum RoleEnum {
   private static final Map<String, RoleEnum> map = new HashMap<>();
 
   static {
-    for (RoleEnum values : RoleEnum.values()) {
-      map.put(values.toString(), values);
+    RoleEnum[] values = RoleEnum.values();
+    for (RoleEnum value : values) {
+      map.put(value.toString(), value);
     }
   }
 

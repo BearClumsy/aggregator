@@ -1,5 +1,9 @@
 package dplatonov.scaner;
 
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.closeWindow;
+import static com.codeborne.selenide.Selenide.open;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
@@ -7,7 +11,14 @@ import dplatonov.scaner.dao.CompanyDao;
 import dplatonov.scaner.dao.ConfigDao;
 import dplatonov.scaner.entity.Address;
 import dplatonov.scaner.entity.Company;
+import dplatonov.scaner.entity.ScannerConfigs;
 import dplatonov.scaner.validator.CompanyValidator;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,23 +30,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
-
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.closeWindow;
-import static com.codeborne.selenide.Selenide.open;
-
 @Configuration
-@EnableScheduling
 @RequiredArgsConstructor
 public class Parser {
   private static final Logger log = LogManager.getLogger(Parser.class);
@@ -46,16 +43,16 @@ public class Parser {
   public static final String REMOTE_URL_FIREFOX = "http://selenium-hub:4444/wd/hub/";
   private RemoteWebDriver remoteWebDriver;
 
-  @Scheduled(fixedDelay = 3600000) // once in day
+//  @Scheduled(fixedDelay = 3600000) // once in day
   public void task() {
-    config();
-    open(URL);
-    downloadPages();
-    pars();
-    closeWebDriver();
+//    configureWebDriver();
+//    open(URL);
+//    downloadPages();
+//    pars();
+//    closeWebDriver();
   }
 
-  private void config() {
+  private void configureWebDriver() {
     try {
       remoteWebDriver =
           new RemoteWebDriver(new URL(REMOTE_URL_FIREFOX), DesiredCapabilities.firefox());

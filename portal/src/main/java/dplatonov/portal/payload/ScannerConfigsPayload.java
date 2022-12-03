@@ -19,4 +19,5 @@ public class ScannerConfigsPayload {
   private final boolean active;
   @NotEmpty(message = "User id cannot be empty or null")
   private final Long userId;
+  private final Boolean isStarted;
 }

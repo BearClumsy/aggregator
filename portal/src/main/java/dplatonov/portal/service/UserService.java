@@ -86,11 +86,16 @@ public class UserService {
   }
 
   public boolean isAdmin() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    String email = auth.getName();
-    User user = dao.findByEmail(email);
+    User user = getCurentUser();
     Role role = user.getRole();
     return role.getRole().equals(RoleEnum.getRoleEnum(RoleEnum.ADMIN));
+  }
+
+  public User getCurentUser(){
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String email = auth.getName();
+
+    return dao.findByEmail(email);
   }
 
   private static UserPayload mapUsersToPayloads(User user) {

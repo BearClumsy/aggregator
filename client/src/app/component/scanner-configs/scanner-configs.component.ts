@@ -37,7 +37,7 @@ export class ScannerConfigsComponent implements OnInit {
   private data: PeriodicElement[] = [];
   dataSource = new MatTableDataSource<PeriodicElement>(this.data);
   private pageSize = 10;
-  private isScannerStarted = true;
+  private isScannerStarted = false;
   private isPreviewEnable = false;
 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -86,12 +86,7 @@ export class ScannerConfigsComponent implements OnInit {
     return !!currentUser;
   }
 
-  isAdmin(): boolean {
-    return this.authService.currentUserValue.role === 'admin';
-  }
-
   start(row: PeriodicElement): void {
-    this.isScannerStarted = false;
     const configs: ScannerConfig = {
       id: row?.id,
       url: row.url,
@@ -99,10 +94,20 @@ export class ScannerConfigsComponent implements OnInit {
       name: row.name,
       active: row.active
     };
+    this.service.start(configs);
+    this.isScannerStarted = true;
   }
 
   stop(row: PeriodicElement): void {
-    this.isScannerStarted = true;
+    const configs: ScannerConfig = {
+      id: row?.id,
+      url: row.url,
+      scannerSteps: row.queue,
+      name: row.name,
+      active: row.active
+    };
+    this.service.stop(configs);
+    this.isScannerStarted = false;
   }
 
   delete(row: PeriodicElement): void {
@@ -121,6 +126,14 @@ export class ScannerConfigsComponent implements OnInit {
         this.refreshScannerConfigs();
       }
     );
+  }
+
+  checkStatus(): void {
+    this.service.checkStatus()
+    .pipe(first())
+    .subscribe(data => {
+      this.refreshScannerConfigs();
+    });
   }
 
   private refreshScannerConfigs(): void {

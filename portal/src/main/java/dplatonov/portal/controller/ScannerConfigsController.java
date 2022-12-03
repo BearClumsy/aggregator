@@ -1,6 +1,6 @@
 package dplatonov.portal.controller;
 
-import dplatonov.portal.annatation.Admin;
+import dplatonov.portal.annatation.Participant;
 import dplatonov.portal.payload.ScannerConfigsPayload;
 import dplatonov.portal.service.ScannerConfigsService;
 import java.util.List;
@@ -20,17 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/scanner-configs")
 @RequiredArgsConstructor
 public class ScannerConfigsController {
+
   private final ScannerConfigsService service;
 
-  @Admin
+  @Participant
   @GetMapping
   public ResponseEntity<List<ScannerConfigsPayload>> get() {
-    return ResponseEntity.status(HttpStatus.OK).body(service.get());
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.get());
+    } catch (IllegalAccessException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
   }
 
-  @Admin
+  @Participant
   @PostMapping
-  public ResponseEntity<ScannerConfigsPayload> create(@RequestBody ScannerConfigsPayload payload){
+  public ResponseEntity<ScannerConfigsPayload> create(@RequestBody ScannerConfigsPayload payload) {
     ScannerConfigsPayload result = service.create(payload);
     if (Objects.isNull(result)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -38,26 +43,45 @@ public class ScannerConfigsController {
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @Admin
+  @Participant
   @PutMapping
-  public ResponseEntity<ScannerConfigsPayload> update(@RequestBody ScannerConfigsPayload payload){
-    ScannerConfigsPayload result = service.update(payload);
-    if (Objects.isNull(result)) {
+  public ResponseEntity<ScannerConfigsPayload> update(@RequestBody ScannerConfigsPayload payload) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.update(payload));
+    } catch (IllegalAccessException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
-
-    return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @Admin
+  @Participant
   @PatchMapping
-  public ResponseEntity<ScannerConfigsPayload> markAsDelete(@RequestBody ScannerConfigsPayload payload){
-    ScannerConfigsPayload result = service.markAsDelete(payload);
-    if (Objects.isNull(result)) {
+  public ResponseEntity<ScannerConfigsPayload> markAsDelete(
+      @RequestBody ScannerConfigsPayload payload) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.markAsDelete(payload));
+    } catch (IllegalAccessException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
+  }
 
-    return ResponseEntity.status(HttpStatus.OK).body(result);
+  @Participant
+  @PostMapping("/start")
+  public ResponseEntity<ScannerConfigsPayload> start(@RequestBody ScannerConfigsPayload payload) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.start(payload));
+    } catch (IllegalAccessException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+  }
+
+  @Participant
+  @PostMapping("/stop")
+  public ResponseEntity<ScannerConfigsPayload> stop(@RequestBody ScannerConfigsPayload payload) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.stop(payload));
+    } catch (IllegalAccessException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
   }
 
 }

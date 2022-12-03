@@ -1,4 +1,4 @@
-package dplatonov.portal.entity;
+package dplatonov.scaner.entity;
 
 import java.util.Objects;
 import javax.persistence.Column;

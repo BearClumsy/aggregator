@@ -1,4 +1,4 @@
-package dplatonov.portal.entity;
+package dplatonov.scaner.entity;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,9 +51,8 @@ public class ScannerConfigs {
   @Column(name = "active", nullable = false)
   private Boolean active;
 
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
+  @Column(name = "user_id", nullable = false)
+  private Long userId;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(name = "scanner_configs_id")

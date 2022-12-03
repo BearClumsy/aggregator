@@ -42,7 +42,7 @@ services:
       - 8888:80
 
   firefox:
-    image: selenium/node-firefox:dev
+    image: selenium/node-firefox:latest
     container_name: firefox
     shm_size: 2gb
     depends_on:

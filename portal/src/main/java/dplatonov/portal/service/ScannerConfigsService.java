@@ -4,8 +4,8 @@ import dplatonov.portal.dao.ScannerConfigsDao;
 import dplatonov.portal.entity.ScannerConfigs;
 import dplatonov.portal.mapper.ScannerConfigsMapper;
 import dplatonov.portal.payload.ScannerConfigsPayload;
+import dplatonov.portal.validator.ScannerConfigsValidator;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,24 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScannerConfigsService {
 
   private final ScannerConfigsDao dao;
+  private final ScannerConfigsValidator validator;
 
   private final ScannerConfigsMapper mapper;
 
-  public List<ScannerConfigsPayload> get() {
-    return mapper.mapConfigsEntityToPayload(dao.findAllByActive(true));
+  public List<ScannerConfigsPayload> get() throws IllegalAccessException {
+    return mapper.mapConfigsEntityToPayload(validator.getAllActiveScannerConfigs());
   }
 
   public ScannerConfigsPayload create(ScannerConfigsPayload payload) {
     return mapper.mapConfigEntityToPayload(dao.save(mapper.mapConfigPayloadToEntity(payload)));
   }
 
-  public ScannerConfigsPayload update(ScannerConfigsPayload payload)
-      throws IllegalArgumentException {
+  public ScannerConfigsPayload update(ScannerConfigsPayload payload) throws IllegalAccessException {
     ScannerConfigs configs = mapper.mapConfigPayloadToEntity(payload);
-    Optional<ScannerConfigs> optional = dao.findById(configs.getId());
-    if (optional.isEmpty()) {
-      throw new IllegalArgumentException();
-    }
+    ScannerConfigs config = validator.getScannerConfigForOwner(configs.getId());
 
     ScannerConfigs result = ScannerConfigs.builder()
         .id(payload.getId())
@@ -41,16 +38,31 @@ public class ScannerConfigsService {
         .url(payload.getUrl())
         .scannerSteps(mapper.mapStepsPayloadToEntity(payload.getScannerSteps()))
         .active(payload.isActive())
-        .userId(optional.get().getUserId())
+        .user(config.getUser())
         .build();
 
     return mapper.mapConfigEntityToPayload(dao.save(result));
   }
 
-  public ScannerConfigsPayload markAsDelete(ScannerConfigsPayload payload) {
-    ScannerConfigs configs = mapper.mapConfigPayloadToEntity(payload);
+  public ScannerConfigsPayload markAsDelete(ScannerConfigsPayload payload)
+      throws IllegalAccessException {
+    ScannerConfigs configs = validator.getScannerConfigForOwner(payload.getId());
     configs.setActive(false);
     configs.getScannerSteps().forEach(step -> step.setActive(false));
+    return mapper.mapConfigEntityToPayload(dao.save(configs));
+  }
+
+  public ScannerConfigsPayload start(ScannerConfigsPayload payload) throws IllegalAccessException {
+    ScannerConfigs configs = validator.getScannerConfigForOwner(payload.getId());
+    //TODO make functionality to send jms message via kafka to scanner
+
+    return mapper.mapConfigEntityToPayload(dao.save(configs));
+  }
+
+  public ScannerConfigsPayload stop(ScannerConfigsPayload payload) throws IllegalAccessException {
+    ScannerConfigs configs = validator.getScannerConfigForOwner(payload.getId());
+    //TODO make functionality to send jms message via kafka to scanner
+
     return mapper.mapConfigEntityToPayload(dao.save(configs));
   }
 }

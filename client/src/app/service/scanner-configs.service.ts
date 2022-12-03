@@ -26,4 +26,16 @@ export class ScannerConfigsService {
   update(scannerConfigs: ScannerConfig): Observable<ScannerConfig> {
     return this.http.put<ScannerConfig>('/api/scanner-configs', scannerConfigs);
   }
+
+  start(scannerConfigs: ScannerConfig): Observable<ScannerConfig> {
+    return this.http.post<ScannerConfig>('/api/scanner-configs/start', scannerConfigs);
+  }
+
+  stop(scannerConfig: ScannerConfig): Observable<ScannerConfig> {
+    return this.http.post<ScannerConfig>('/api/scanner-configs/stop', scannerConfig);
+  }
+
+  checkStatus(): Observable<ScannerConfig[]> {
+    return this.http.get<ScannerConfig[]>('/api/scanner-configs/check');
+  }
 }

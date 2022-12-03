@@ -27,7 +27,7 @@ public class ScannerConfigsMapper {
         .url(scannerConfigs.getUrl())
         .scannerSteps(mapStepsEntityToPayload(scannerConfigs.getScannerSteps()))
         .active(scannerConfigs.getActive())
-        .userId(scannerConfigs.getUserId())
+        .userId(scannerConfigs.getUser().getId())
         .build();
   }
 
@@ -53,7 +53,7 @@ public class ScannerConfigsMapper {
         .url(payload.getUrl())
         .scannerSteps(mapStepsPayloadToEntity(payload.getScannerSteps()))
         .active(payload.isActive())
-        .userId(userService.getUserById(payload.getUserId()).getId())
+        .user(userService.getUserById(payload.getUserId()))
         .build();
   }
 
