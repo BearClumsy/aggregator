@@ -94,7 +94,13 @@ export class ScannerConfigsComponent implements OnInit {
       name: row.name,
       active: row.active
     };
-    this.service.start(configs);
+    this.service.start(configs)
+    .pipe(first())
+    .subscribe(
+      data => {
+        // this.refreshScannerConfigs();
+      }
+    );
     this.isScannerStarted = true;
   }
 
@@ -106,7 +112,13 @@ export class ScannerConfigsComponent implements OnInit {
       name: row.name,
       active: row.active
     };
-    this.service.stop(configs);
+    this.service.stop(configs)
+    .pipe(first())
+    .subscribe(
+      data => {
+        // this.refreshScannerConfigs();
+      }
+    );
     this.isScannerStarted = false;
   }
 

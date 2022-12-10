@@ -6,6 +6,7 @@ import dplatonov.portal.mapper.ScannerConfigsMapper;
 import dplatonov.portal.payload.ScannerConfigsPayload;
 import dplatonov.portal.validator.ScannerConfigsValidator;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,10 @@ public class ScannerConfigsService {
   private final ScannerConfigsValidator validator;
 
   private final ScannerConfigsMapper mapper;
+//  private final KafkaProducer producer;
+
+//  @Value("${scanner.topic}")
+//  private String topic;
 
   public List<ScannerConfigsPayload> get() throws IllegalAccessException {
     return mapper.mapConfigsEntityToPayload(validator.getAllActiveScannerConfigs());
@@ -55,6 +60,14 @@ public class ScannerConfigsService {
   public ScannerConfigsPayload start(ScannerConfigsPayload payload) throws IllegalAccessException {
     ScannerConfigs configs = validator.getScannerConfigForOwner(payload.getId());
     //TODO make functionality to send jms message via kafka to scanner
+    if (Objects.nonNull(configs)) {
+//      Action action = Action.builder()
+//          .scannerId(configs.getId())
+//          .status(MsgStatus.START)
+//          .build();
+//      String data = "";
+//      producer.send(topic, data);
+    }
 
     return mapper.mapConfigEntityToPayload(dao.save(configs));
   }
