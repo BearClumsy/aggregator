@@ -1,4 +1,4 @@
-package dplatonov.portal.component;
+package dplatonov.scaner.component;
 
 import java.util.concurrent.CountDownLatch;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class KafkaConsumer {
 
   @KafkaListener(topics = "${scanner.topic}")
   public void receive(ConsumerRecord<?, ?> consumerRecord) {
-//    LOGGER.info("received payload='{}'", consumerRecord.toString());
+    LOGGER.info("received payload='{}'", consumerRecord.toString());
     payload = consumerRecord.toString();
     latch.countDown();
   }
