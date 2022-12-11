@@ -33,7 +33,7 @@ export interface PeriodicElement {
   styleUrls: ['./scanner-configs.component.css']
 })
 export class ScannerConfigsComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'url', 'queue', 'start', 'preview', 'edit', 'active'];
+  displayedColumns: string[] = ['position', 'name', 'url', 'progress', 'start', 'preview', 'edit', 'active'];
   private data: PeriodicElement[] = [];
   dataSource = new MatTableDataSource<PeriodicElement>(this.data);
   private pageSize = 10;
