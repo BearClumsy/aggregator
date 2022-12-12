@@ -1,6 +1,5 @@
 package dplatonov.portal.utils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
@@ -14,9 +13,8 @@ public class StringUtils<T> {
   }
 
   @SneakyThrows
-  public T toObjectFromString(String json) {
-    return objectMapper.readValue(json, new TypeReference<>() {
-    });
+  public T toObjectFromString(String json, Class<T> t) {
+    return objectMapper.readValue(json, t);
   }
 
 }

@@ -19,14 +19,14 @@ public class KafkaConsumer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumer.class);
   @Getter
-  private CountDownLatch latch = new CountDownLatch(1);
+  private final CountDownLatch latch = new CountDownLatch(1);
 
   private final ScannerConfigsService scannerConfigsService;
   @Getter
   private String payload;
 
 
-  @KafkaListener(topics = "${scanner.topic}")
+  @KafkaListener(topics = "${scanner.topic1}")
   public void receive(ConsumerRecord<?, ?> consumerRecord) {
     LOGGER.info("received payload='{}'", consumerRecord.toString());
     payload = consumerRecord.toString();
@@ -39,10 +39,6 @@ public class KafkaConsumer {
       scannerConfigsService.stop(action.getScannerId());
     }
     latch.countDown();
-  }
-
-  public void resetLatch() {
-    latch = new CountDownLatch(1);
   }
 
 }

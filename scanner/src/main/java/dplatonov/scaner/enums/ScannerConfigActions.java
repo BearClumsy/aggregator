@@ -6,7 +6,8 @@ public enum ScannerConfigActions {
   SCAN("scan"),
   REPEAT("repeat"),
   PAUSE("pause"),
-  CLEAR("clear");
+  CLEAR("clear"),
+  BACK("back");
 
   private final String click;
 

@@ -35,7 +35,7 @@ export class ScannerConfigsService {
     return this.http.post<ScannerConfig>('/api/scanner-configs/stop', scannerConfig);
   }
 
-  checkStatus(): Observable<ScannerConfig[]> {
-    return this.http.get<ScannerConfig[]>('/api/scanner-configs/check');
+  checkStatus(scannerConfig: ScannerConfig): Observable<boolean> {
+    return this.http.get<boolean>('/api/scanner-configs/check/' + scannerConfig.id);
   }
 }

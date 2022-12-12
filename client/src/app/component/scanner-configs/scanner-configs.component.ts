@@ -5,7 +5,7 @@ import {AuthService} from '../../service/auth.service';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {first, map} from 'rxjs/operators';
+import {first, map, switchMap, tap} from 'rxjs/operators';
 import {ScannerConfigsService} from '../../service/scanner-configs.service';
 import {ScannerConfig} from '../../model/scanner-configs.model';
 import {
@@ -17,6 +17,7 @@ import {
 } from '../scanner-configs-edit-dialog/scanner-configs-edit-dialog.component';
 import {Router} from '@angular/router';
 import {Location} from '@angular/common';
+import {interval} from "rxjs";
 
 export interface PeriodicElement {
   position: number;
@@ -25,6 +26,9 @@ export interface PeriodicElement {
   url: string;
   queue: ScannerSteps[];
   active: boolean;
+  isStarted: boolean;
+
+  isCompleted: boolean
 }
 
 @Component({
@@ -37,8 +41,6 @@ export class ScannerConfigsComponent implements OnInit {
   private data: PeriodicElement[] = [];
   dataSource = new MatTableDataSource<PeriodicElement>(this.data);
   private pageSize = 10;
-  private isScannerStarted = false;
-  private isPreviewEnable = false;
 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
@@ -61,7 +63,9 @@ export class ScannerConfigsComponent implements OnInit {
           name: value.name,
           url: value.url,
           queue: value.scannerSteps,
-          active: value.active
+          active: value.active,
+          isStarted: false,
+          isCompleted: false
         });
       });
       return periodicElements;
@@ -87,24 +91,32 @@ export class ScannerConfigsComponent implements OnInit {
   }
 
   start(row: PeriodicElement): void {
+    row.isStarted = true;
     const configs: ScannerConfig = {
       id: row?.id,
       url: row.url,
       scannerSteps: row.queue,
       name: row.name,
-      active: row.active
+      active: row.active,
     };
     this.service.start(configs)
-    .pipe(first())
+    .pipe(switchMap(value => {
+      return interval(5000).pipe(switchMap(() => {
+        return this.service.checkStatus(configs);
+      }), tap((result: boolean) => {
+        row.isCompleted = result;
+        row.isStarted = !result;
+      }))
+    }))
     .subscribe(
       data => {
         // this.refreshScannerConfigs();
       }
     );
-    this.isScannerStarted = true;
   }
 
   stop(row: PeriodicElement): void {
+    row.isStarted = false;
     const configs: ScannerConfig = {
       id: row?.id,
       url: row.url,
@@ -119,7 +131,6 @@ export class ScannerConfigsComponent implements OnInit {
         // this.refreshScannerConfigs();
       }
     );
-    this.isScannerStarted = false;
   }
 
   delete(row: PeriodicElement): void {
@@ -138,14 +149,6 @@ export class ScannerConfigsComponent implements OnInit {
         this.refreshScannerConfigs();
       }
     );
-  }
-
-  checkStatus(): void {
-    this.service.checkStatus()
-    .pipe(first())
-    .subscribe(data => {
-      this.refreshScannerConfigs();
-    });
   }
 
   private refreshScannerConfigs(): void {
@@ -178,11 +181,11 @@ export class ScannerConfigsComponent implements OnInit {
     });
   }
 
-  isStarted(): boolean {
-    return this.isScannerStarted;
+  isStarted(element: PeriodicElement): boolean {
+    return element.isStarted;
   }
 
-  isPreviewEnabled(): boolean {
-    return this.isPreviewEnable;
+  isPreviewEnabled(element: PeriodicElement): boolean {
+    return element.isCompleted;
   }
 }

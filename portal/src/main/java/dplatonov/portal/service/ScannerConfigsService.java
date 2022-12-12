@@ -9,7 +9,9 @@ import dplatonov.portal.messages.Action;
 import dplatonov.portal.payload.ScannerConfigsPayload;
 import dplatonov.portal.utils.StringUtils;
 import dplatonov.portal.validator.ScannerConfigsValidator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +28,9 @@ public class ScannerConfigsService {
 
   private final ScannerConfigsMapper mapper;
   private final KafkaProducer producer;
+  private final Map<Long, Boolean> statuses = new HashMap<>();
 
-  @Value("${scanner.topic}")
+  @Value("${scanner.topic1}")
   private String topic;
 
   public List<ScannerConfigsPayload> get() throws IllegalAccessException {
@@ -64,6 +67,7 @@ public class ScannerConfigsService {
 
   public ScannerConfigsPayload start(ScannerConfigsPayload payload) throws IllegalAccessException {
     ScannerConfigs configs = validator.getScannerConfigForOwner(payload.getId());
+    statuses.put(configs.getId(), false);
     String message = getMessage(configs, MsgStatus.START);
     producer.send(topic, message);
 
@@ -90,5 +94,13 @@ public class ScannerConfigsService {
     } else {
       throw new IllegalAccessException();
     }
+  }
+
+  public Boolean checkStatus(Long id) throws IllegalAccessException {
+    return statuses.get(id);
+  }
+
+  public void updateStatus(Action action) {
+    statuses.put(action.getScannerId(), action.getStatus().equals(MsgStatus.FINISH));
   }
 }

@@ -10,7 +10,8 @@ public enum ScannerConfigTypes {
   TYPE("type"),
   HREF("href"),
 
-  TAG("tag");
+  TAG("tag"),
+  XPATH("xpath");
 
   private final String click;
 
@@ -28,10 +29,6 @@ public enum ScannerConfigTypes {
 
   ScannerConfigTypes(String click) {
     this.click = click;
-  }
-
-  public static String getEnum(ScannerConfigTypes type) {
-    return type.toString();
   }
 
   @Override

@@ -32,19 +32,19 @@
     <ng-container matColumnDef="progress">
       <th mat-header-cell *matHeaderCellDef [width]="100"> </th>
       <td mat-cell *matCellDef="let element">
-        <mat-progress-bar mode="indeterminate" *ngIf="isStarted()"></mat-progress-bar>
+        <mat-progress-bar mode="indeterminate" *ngIf="isStarted(element)"></mat-progress-bar>
       </td>
     </ng-container>
     <ng-container matColumnDef="start" *ngIf="isAuthenticated()">
       <th mat-header-cell *matHeaderCellDef> Action</th>
-      <td mat-cell *matCellDef="let row">
-        <button mat-icon-button color="primary" *ngIf="!isStarted()"
-                (click)="start(row)"
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" *ngIf="!isStarted(element)"
+                (click)="start(element)"
                 title="Start Scanner">
           <mat-icon>send</mat-icon>
         </button>
-        <button mat-icon-button="stop" color="primary" *ngIf="isStarted()"
-                (click)="stop(row)"
+        <button mat-icon-button="stop" color="primary" *ngIf="isStarted(element)"
+                (click)="stop(element)"
                 title="Stop Scanner">
           <mat-icon>stop</mat-icon>
         </button>
@@ -52,9 +52,9 @@
     </ng-container>
     <ng-container matColumnDef="preview" *ngIf="isAuthenticated()">
       <th mat-header-cell *matHeaderCellDef> Preview</th>
-      <td mat-cell *matCellDef="let row">
-        <button mat-icon-button color="primary" [disabled]="!isPreviewEnabled()"
-                (click)="preview(row)" title="View Content">
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" [disabled]="!isPreviewEnabled(element)"
+                (click)="preview(element)" title="View Content">
           <mat-icon>preview</mat-icon>
         </button>
       </td>
