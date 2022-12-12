@@ -17,12 +17,12 @@ public class KafkaConsumer {
   @Getter
   private String payload;
 
-  @KafkaListener(topics = "${scanner.topic}")
-  public void receive(ConsumerRecord<?, ?> consumerRecord) {
+//  @KafkaListener(topics = "${scanner.topic}")
+//  public void receive(ConsumerRecord<?, ?> consumerRecord) {
 //    LOGGER.info("received payload='{}'", consumerRecord.toString());
-    payload = consumerRecord.toString();
-    latch.countDown();
-  }
+//    payload = consumerRecord.toString();
+//    latch.countDown();
+//  }
 
   public void resetLatch() {
     latch = new CountDownLatch(1);

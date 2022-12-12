@@ -15,14 +15,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@EnableScheduling
 @AllArgsConstructor
-@Transactional
 public class ScannerConfigsService {
 
   private final ScannerConfigsDao dao;
@@ -51,7 +48,10 @@ public class ScannerConfigsService {
 
   public void stop(Long scannerConfigsId) {
     if (futureMap.containsKey(scannerConfigsId)) {
-      futureMap.get(scannerConfigsId).cancel(true);
+      boolean cancel = futureMap.get(scannerConfigsId).cancel(true);
+      if (cancel) {
+        futureMap.remove(scannerConfigsId);
+      }
     }
   }
 

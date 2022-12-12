@@ -2,7 +2,6 @@ package dplatonov.scaner;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
@@ -42,7 +41,6 @@ public class Parser2 implements Runnable {
   private final ScannerResultDao scannerResultDao;
   private final ScannerConfigsCutoffDao scannerConfigsCutoffDao;
   private final List<ScannerResult> savedResult = new ArrayList<>();
-  private int nextTag = 0;
 
   public Parser2(ScannerConfigs configs, ScannerConfigCutoff scannerConfigCutoff,
       ScannerResultDao scannerResultDao,
@@ -56,8 +54,11 @@ public class Parser2 implements Runnable {
 
   @Override
   public void run() {
+    log.info("PARSER-010: Scanner is started");
     configureWebDriver();
+    log.info("PARSER-011: Web Driver is configured");
     open(this.configs.getUrl());
+    log.info("PARSER-012: Url: " + this.configs.getUrl() + " was opened");
     pars(0, 0, 0);
     finish();
     closeWebDriver();
@@ -80,25 +81,7 @@ public class Parser2 implements Runnable {
         String action = StringUtils.trimAllWhitespace(step.getAction());
         String value = step.getValue();
         String tag = step.getTag();
-        if (!action.contains(ScannerConfigActions.REPEAT.toString())) {
-          mapOfSteps.put(tag, step);
-        }
-        if (action.contains(ScannerConfigActions.INSERT.toString())) {
-          log.info("PARSER-003: Type INSERT tag: " + tag + "; value: " + value + "; type: " + type);
-          insert(tag, value, type);
-        } else if (action.contains(ScannerConfigActions.CLICK.toString())) {
-          log.info("PARSER-004: Type CLICK tag: " + tag + "; type: " + type);
-          click(tag, type);
-        } else if (action.contains(ScannerConfigActions.SCAN.toString())) {
-          log.info("PARSER-005: Type SCAN tag: " + tag + "; type: " + type);
-          String scan = scan(tag, type);
-          ScannerResult result = ScannerResult.builder()
-              .scannerId(this.configs.getId())
-              .value(scan)
-              .build();
-          scannerResultDao.save(result);
-          savedResult.add(result);
-        } else if (action.contains(ScannerConfigActions.REPEAT.toString())) {
+        if (action.contains(ScannerConfigActions.REPEAT.toString())) {
           String[] values = value.split(",");
           if (repeatCount == 0) {
             repeatCount = Integer.parseInt(values[0]);
@@ -113,84 +96,96 @@ public class Parser2 implements Runnable {
             nextTag++;
             pars(this.scannerSteps.indexOf(mapOfSteps.get(tag)), repeatCount, pagesBack);
           }
-        } else if (action.contains(ScannerConfigActions.PAUSE.toString())) {
-          try {
-            log.info("PARSER-008: Waite seconds: " + value);
-            Thread.sleep(TimeUnit.SECONDS.toMillis(Long.parseLong(value)));
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } else {
+          mapOfSteps.put(tag, step);
+          SelenideElement element = getElement(tag, type);
+          if (action.contains(ScannerConfigActions.INSERT.toString())) {
+            log.info(
+                "PARSER-003: Type INSERT tag: " + tag + "; value: " + value + "; type: " + type);
+            element.setValue(value);
+          } else if (action.contains(ScannerConfigActions.CLICK.toString())) {
+            log.info("PARSER-004: Type CLICK tag: " + tag + "; type: " + type);
+            element.click();
+          } else if (action.contains(ScannerConfigActions.SCAN.toString())) {
+            log.info("PARSER-005: Type SCAN tag: " + tag + "; type: " + type);
+            String scan = element.getText();
+            ScannerResult result = ScannerResult.builder()
+                .scannerId(this.configs.getId())
+                .value(scan)
+                .build();
+            scannerResultDao.save(result);
+            savedResult.add(result);
+          } else if (action.contains(ScannerConfigActions.PAUSE.toString())) {
+            try {
+              log.info("PARSER-008: Waite seconds: " + value);
+              Thread.sleep(TimeUnit.SECONDS.toMillis(Long.parseLong(value)));
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
+          } else if (action.contains(ScannerConfigActions.CLEAR.toString())) {
+            log.info("PARSER-009: Clear tag: " + tag);
+            element.clear();
           }
         }
       }
     }
-
   }
 
-  private String scan(String tag, String incomingType) {
-    ScannerConfigTypes type = ScannerConfigTypes.forValue(incomingType);
-    String value = null;
-    switch (type) {
-      case ID:
-        value = $(By.id(tag)).getText();
-        break;
-      case TAG:
-        value = $(By.tagName(tag)).getText();
-        break;
-    }
-
-    return value;
-  }
-
-  private void click(String incomingTag, String incomingType) {
-    String[] tags = incomingTag.split(",");
-    int tagLength = tags.length;
-    String[] types = incomingType.split(",");
+  private SelenideElement getElement(String incommingTags, String incomingTypes) {
     SelenideElement element = null;
-    for (int i = 0; i < tagLength; i++) {
-      String tag = tags[i];
-      ScannerConfigTypes type = ScannerConfigTypes.forValue(types[i]);
+    if (Objects.isNull(incomingTypes) && Objects.isNull(incommingTags)) {
+      return element;
+    }
+    String[] tags = incommingTags.split(",");
+    String[] types = incomingTypes.split(",");
+    int tagsLength = tags.length;
+    for (int i = 0; i < tagsLength; i++) {
+      String stringTag = tags[i];
+      String stringType = types[i];
+      String countOfTheSameTagsInTreeString =
+          stringTag.contains("(") ? stringTag.replaceAll("\\D+", "") : "";
+      int countOfTheSameTagsInTree = countOfTheSameTagsInTreeString.isEmpty() ? 0
+          : Integer.parseInt(countOfTheSameTagsInTreeString) - 1;
+      String tag = stringTag.split("[](]")[0];
+      ScannerConfigTypes type = ScannerConfigTypes.forValue(
+          stringType.replaceAll("[^A-Za-z]+", ""));
       switch (type) {
-        case HREF:
-          element = Objects.isNull(element) ? $(By.linkText(tag)) : element.$(By.linkText(tag));
-          if (tags[tagLength - 1].equals(tag)) {
-            element.click();
-          }
-          break;
-        case NAME:
-          element = Objects.isNull(element) ? $(By.name(tag)) : element.$(By.name(tag));
-          if (tags[tagLength - 1].equals(tag)) {
-            element.click();
-          }
-          break;
         case ID:
-          element = Objects.isNull(element) ? $(By.id(tag)) : element.$(By.id(tag));
-          if (tags[tagLength - 1].equals(tag)) {
-            element.click();
+          if (countOfTheSameTagsInTree > 0) {
+            element = Objects.isNull(element) ? null
+                : element.$$(By.id(tag)).get(countOfTheSameTagsInTree);
+          } else {
+            element = Objects.isNull(element) ? $(By.id(tag)) : element.$(By.id(tag));
           }
           break;
         case TAG:
-          if (Objects.isNull(element)) {
-            element = $(By.tagName(tag));
-            if (tags[tagLength - 1].equals(tag)) {
-              element.click();
-            }
+          if (countOfTheSameTagsInTree > 0) {
+            element = Objects.isNull(element) ? null
+                : element.$$(By.tagName(tag)).get(countOfTheSameTagsInTree);
           } else {
-            ElementsCollection elements = element.$$(By.tagName(tag));
-            elements.get(nextTag).click();
+            element = Objects.isNull(element) ? $(By.tagName(tag)) : element.$(By.tagName(tag));
           }
-
+          break;
+        case NAME:
+          if (countOfTheSameTagsInTree > 0) {
+            element = Objects.isNull(element) ? null
+                : element.$$(By.name(tag)).get(countOfTheSameTagsInTree);
+          } else {
+            element = Objects.isNull(element) ? $(By.name(tag)) : element.$(By.name(tag));
+          }
+          break;
+        case HREF:
+          if (countOfTheSameTagsInTree > 0) {
+            element = Objects.isNull(element) ? null
+                : element.$$(By.linkText(tag)).get(countOfTheSameTagsInTree);
+          } else {
+            element = Objects.isNull(element) ? $(By.linkText(tag)) : element.$(By.linkText(tag));
+          }
           break;
       }
     }
 
-  }
-
-  private void insert(String tag, String value, String type) {
-    if (ScannerConfigTypes.NAME.toString().equalsIgnoreCase(type)) {
-      $(By.name(tag)).setValue(value);
-    } else if (ScannerConfigTypes.ID.toString().equalsIgnoreCase(type)) {
-      $(By.id(tag)).setValue(value);
-    }
+    return element;
   }
 
   private void configureWebDriver() {
@@ -208,4 +203,5 @@ public class Parser2 implements Runnable {
     WebDriverRunner.closeWebDriver();
     log.info("PARSER-002: Web Driver is closed success");
   }
+
 }

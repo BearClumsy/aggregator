@@ -22,10 +22,14 @@ public class KafkaConsumer {
   private CountDownLatch latch = new CountDownLatch(1);
 
   private final ScannerConfigsService scannerConfigsService;
+  @Getter
+  private String payload;
+
 
   @KafkaListener(topics = "${scanner.topic}")
   public void receive(ConsumerRecord<?, ?> consumerRecord) {
     LOGGER.info("received payload='{}'", consumerRecord.toString());
+    payload = consumerRecord.toString();
     String value = consumerRecord.value().toString();
     StringUtils<Action> stringUtils = new StringUtils<>();
     Action action = stringUtils.toObjectFromString(value, Action.class);
