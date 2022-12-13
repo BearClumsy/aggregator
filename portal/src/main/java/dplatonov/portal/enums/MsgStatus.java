@@ -5,7 +5,8 @@ import lombok.Getter;
 public enum MsgStatus {
   START("start"),
   STOP("stop"),
-  FINISH("finish");
+  FINISH("finish"),
+  CRASH("crash");
 
   @Getter
   private final String status;

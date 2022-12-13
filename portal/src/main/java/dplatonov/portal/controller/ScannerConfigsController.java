@@ -1,11 +1,15 @@
 package dplatonov.portal.controller;
 
 import dplatonov.portal.annatation.Participant;
+import dplatonov.portal.payload.POJOResponsePayload;
 import dplatonov.portal.payload.ScannerConfigsPayload;
+import dplatonov.portal.payload.ScannerPreviewPayload;
 import dplatonov.portal.service.ScannerConfigsService;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -87,10 +92,37 @@ public class ScannerConfigsController {
 
   @Participant
   @GetMapping("/check/{id}")
-  public ResponseEntity<Boolean> checkStatus(@PathVariable("id") Long id) {
+  public ResponseEntity<POJOResponsePayload> checkStatus(@PathVariable("id") Long id) {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(service.checkStatus(id));
     } catch (IllegalAccessException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+  }
+
+  @Participant
+  @GetMapping("/preview/{id}")
+  public ResponseEntity<List<ScannerPreviewPayload>> getPreview(@PathVariable("id") Long id) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(service.getPreview(id));
+    } catch (IllegalAccessException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+  }
+
+  @Participant
+  @GetMapping(value = "/create/file/{type}/{id}")
+  @ResponseBody
+  public ResponseEntity<Resource> createFile(@PathVariable("type") String type,
+      @PathVariable("id") Long id) {
+    try {
+      Resource resource = service.createFile(id, type);
+      return ResponseEntity.status(HttpStatus.OK)
+          .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+          .header(HttpHeaders.CONTENT_DISPOSITION,
+              "attachment; filename=\"" + resource.getFilename() + "\"")
+          .body(resource);
+    } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
   }

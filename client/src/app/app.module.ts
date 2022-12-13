@@ -43,6 +43,7 @@ import { ScannerConfigsComponent } from './component/scanner-configs/scanner-con
 import { NewScannerConfigsDialogComponent } from './component/new-scanner-configs-dialog/new-scanner-configs-dialog.component';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { ScannerConfigsEditDialogComponent } from './component/scanner-configs-edit-dialog/scanner-configs-edit-dialog.component';
+import { ScannerConfigsPreviewComponent } from './component/scanner-configs-preview/scanner-configs-preview.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { ScannerConfigsEditDialogComponent } from './component/scanner-configs-e
     AddressEditDialogComponent,
     ScannerConfigsComponent,
     NewScannerConfigsDialogComponent,
-    ScannerConfigsEditDialogComponent
+    ScannerConfigsEditDialogComponent,
+    ScannerConfigsPreviewComponent
   ],
   imports: [
     BrowserModule,

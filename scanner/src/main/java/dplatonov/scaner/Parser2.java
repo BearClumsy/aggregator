@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -36,8 +35,8 @@ import org.springframework.util.StringUtils;
 public class Parser2 implements Runnable {
 
   private static final Logger log = LogManager.getLogger(Parser.class);
-  //  public static final String REMOTE_URL_FIREFOX = "http://selenium-hub:4444/wd/hub/";
-  public static final String REMOTE_URL_FIREFOX = "http://localhost:4444/wd/hub/";
+    public static final String REMOTE_URL_FIREFOX = "http://selenium-hub:4444/wd/hub/";
+//  public static final String REMOTE_URL_FIREFOX = "http://localhost:4444/wd/hub/";
   private final ScannerConfigs configs;
   private final List<ScannerSteps> scannerSteps;
   private final ScannerConfigCutoff scannerConfigCutoff;
@@ -65,10 +64,24 @@ public class Parser2 implements Runnable {
     log.info("PARSER-011: Web Driver is configured");
     open(this.configs.getUrl());
     log.info("PARSER-012: Url: " + this.configs.getUrl() + " was opened");
-    pars(0, 0, 0, 0, 0);
+    pars(0, 0, 0, 0, new int[0], 0);
     log.info("PARSER-013: Parsing was finished");
     finish();
     closeWebDriver();
+  }
+
+  private void crash() {
+    scannerConfigCutoff.setStopDate(new Date());
+    scannerConfigCutoff.setIsInterrupted(true);
+    scannerConfigsCutoffDao.save(scannerConfigCutoff);
+    Action action = Action.builder()
+        .scannerId(configs.getId())
+        .status(MsgStatus.CRASH)
+        .build();
+    producer.send(topic, action);
+    log.info("PARSER-007: Scanner is finished");
+    closeWebDriver();
+    Thread.currentThread().interrupt();
   }
 
   private void finish() {
@@ -82,7 +95,8 @@ public class Parser2 implements Runnable {
     log.info("PARSER-007: Scanner is finished");
   }
 
-  private void pars(int i, int repeatCount, int pagesBack, int next, int numberOfTagIsIterable) {
+  private void pars(int i, int repeatCount, int pagesBack, int next,
+      int[] positionsOfTagsIsIterable, int maxRepeatCount) {
     Map<String, ScannerSteps> mapOfSteps = new HashMap<>();
     int size = this.scannerSteps.size();
     int iter = next;
@@ -94,35 +108,57 @@ public class Parser2 implements Runnable {
         String value = step.getValue();
         String tag = step.getTag();
         if (action.contains(ScannerConfigActions.REPEAT.toString())) {
-          String[] values = value.split(",");
+          if (pagesBack != 0 && next >= maxRepeatCount) {
+            continue;
+          }
+          String[] values = value.split("/");
           if (repeatCount == 0) {
             repeatCount = Integer.parseInt(values[0]);
+            maxRepeatCount = repeatCount;
             pagesBack = Integer.parseInt(values[1]);
-            step.setValue("0,0");
           }
           if (repeatCount > 0) {
             next++;
-            numberOfTagIsIterable = Integer.parseInt(values[2]);
+            positionsOfTagsIsIterable = Arrays.stream(values[2].split(","))
+                .mapToInt(Integer::parseInt).toArray();
             log.info("PARSER-006: Repeat with tag: " + tag + "; repeatCount: " + repeatCount
                 + "; pages back: " + pagesBack + " next index is: " + next
-                + " number of tage is iterable: " + numberOfTagIsIterable);
-            IntStream.range(0, pagesBack).forEach(index -> Selenide.back());
+                + " positions of tags is iterable: " + Arrays.toString(positionsOfTagsIsIterable));
+            for (int index = 0; index < pagesBack; index++) {
+              log.info("PARSER-016: Page back on: " + (pagesBack) + (" page(s)"));
+              Selenide.back();
+            }
             repeatCount--;
             pars(this.scannerSteps.indexOf(mapOfSteps.get(tag)), repeatCount, pagesBack, next,
-                numberOfTagIsIterable);
+                positionsOfTagsIsIterable, maxRepeatCount);
           }
         } else {
           mapOfSteps.put(tag, step);
-          SelenideElement element = getElement(tag, type, iter, numberOfTagIsIterable);
-          iter = 0;
-          if (action.contains(ScannerConfigActions.INSERT.toString())) {
+          int positionOfTagIsIterable = 0;
+          if (positionsOfTagsIsIterable.length > 0) {
+            positionOfTagIsIterable = positionsOfTagsIsIterable[0];
+            positionsOfTagsIsIterable = Arrays.stream(positionsOfTagsIsIterable).skip(1).toArray();
+          }
+          SelenideElement element = getElement(tag, type, iter, positionOfTagIsIterable);
+          if (Objects.nonNull(element) && element.toString().contains("NoSuchElementException")) {
+            log.error(
+                "PARSER-015: Scanner is crushed on tag: " + tag + "; type: " + type + " action: "
+                    + action);
+            crash();
+          }
+          if (positionsOfTagsIsIterable.length == 0) {
+            iter = 0;
+          }
+          if (action.contains(ScannerConfigActions.INSERT.toString()) && Objects.nonNull(element)) {
             log.info(
                 "PARSER-003: Type INSERT tag: " + tag + "; value: " + value + "; type: " + type);
             element.setValue(value);
-          } else if (action.contains(ScannerConfigActions.CLICK.toString())) {
+          } else if (action.contains(ScannerConfigActions.CLICK.toString()) && Objects.nonNull(
+              element)) {
             log.info("PARSER-004: Type CLICK tag: " + tag + "; type: " + type);
             element.click();
-          } else if (action.contains(ScannerConfigActions.SCAN.toString())) {
+          } else if (action.contains(ScannerConfigActions.SCAN.toString()) && Objects.nonNull(
+              element)) {
             log.info("PARSER-005: Type SCAN tag: " + tag + "; type: " + type);
             String scan = element.getText();
             ScannerResult result = ScannerResult.builder()
@@ -137,7 +173,8 @@ public class Parser2 implements Runnable {
             } catch (InterruptedException e) {
               throw new RuntimeException(e);
             }
-          } else if (action.contains(ScannerConfigActions.CLEAR.toString())) {
+          } else if (action.contains(ScannerConfigActions.CLEAR.toString()) && Objects.nonNull(
+              element)) {
             log.info("PARSER-009: Clear tag: " + tag);
             element.clear();
           } else if (action.contains(ScannerConfigActions.BACK.toString())) {
@@ -150,7 +187,7 @@ public class Parser2 implements Runnable {
   }
 
   private SelenideElement getElement(String incommingTags, String incomingType, int next,
-      int numberOfTagIsIterable) {
+      int positionOfTagIsIterable) {
     SelenideElement element = null;
     if (Objects.isNull(incomingType) && Objects.isNull(incommingTags)) {
       return null;
@@ -158,11 +195,11 @@ public class Parser2 implements Runnable {
     ScannerConfigTypes type = ScannerConfigTypes.forValue(incomingType);
     if (next > 0) {
       String[] tags = incommingTags.split("/");
-      String node = tags[numberOfTagIsIterable];
+      String node = tags[positionOfTagIsIterable];
       String index = node.replaceAll("\\D+", "");
       String newIndex = String.valueOf(Integer.parseInt(index) + next);
       String newNode = node.split("\\[")[0] + "[" + newIndex + "]";
-      tags[numberOfTagIsIterable] = newNode;
+      tags[positionOfTagIsIterable] = newNode;
       StringBuilder sb = new StringBuilder();
       Arrays.stream(tags).skip(1).forEach(tag -> {
         sb.append("/");

@@ -1,0 +1,46 @@
+<div fxLayout="column">
+  <div class="modal-header" fxLayout="column" fxLayoutAlign="center center">
+    <span style="font: 25px bold">{{getScannerConfigName()}}</span>
+  </div>
+  <div fxLayout
+       fxLayout.xs="column"
+       fxLayoutAlign="start"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0">
+    <mat-form-field fxFlex="90%">
+      <label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filter">
+      </label>
+    </mat-form-field>
+  </div>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> No.</th>
+      <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+    </ng-container>
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef> Start Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.startDate}} </td>
+    </ng-container>
+    <ng-container matColumnDef="finishDate">
+      <th mat-header-cell *matHeaderCellDef> Finish Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.finishDate}} </td>
+    </ng-container>
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef> Value</th>
+      <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+</div>
+<mat-divider></mat-divider>
+<div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+  <div class="modal-footer" fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+    <button mat-button color="primary" fxFlex value="bold" (click)="downloadCsv()">
+      <mat-icon>description</mat-icon>
+      csv
+    </button>
+  </div>
+</div>

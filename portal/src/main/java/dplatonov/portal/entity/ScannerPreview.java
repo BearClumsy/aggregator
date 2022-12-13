@@ -1,6 +1,5 @@
 package dplatonov.portal.entity;
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -15,12 +14,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "scanner_configs_cutoff", schema = "aggregator")
+@Table(name = "scanner_result", schema = "aggregator")
 @Getter
 @Setter
 @ToString
@@ -28,26 +25,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class ScannerConfigCutoff {
+public class ScannerPreview {
 
   @Id
+  @SequenceGenerator(name = "scanner_result_seq", schema = "aggregator", sequenceName = "scanner_result_seq", allocationSize = 1)
+  @GeneratedValue(generator = "scanner_result_seq", strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false, unique = true)
-  @GeneratedValue(generator = "scanner_configs_cutoff_id_seq", strategy = GenerationType.AUTO)
-  @SequenceGenerator(name = "scanner_configs_cutoff_id_seq", schema = "aggregator", sequenceName = "scanner_configs_cutoff_id_seq", allocationSize = 1)
   private Long id;
-
-  @Column(name = "start_date", nullable = false)
-  @CreatedDate
-  private Date startDate;
-
-  @Column(name = "stop_date", nullable = false)
-  @LastModifiedDate
-  private Date stopDate;
-
-  @Column(name = "is_interrupted", nullable = false)
-  private Boolean isInterrupted;
 
   @Column(name = "scanner_id", nullable = false)
   private Long scannerId;
 
+  @Column(name = "value", nullable = false)
+  private String value;
 }

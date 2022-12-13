@@ -5,7 +5,7 @@ import {AuthService} from '../../service/auth.service';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {first, map, switchMap, tap} from 'rxjs/operators';
+import {first, map, switchMap, takeWhile} from 'rxjs/operators';
 import {ScannerConfigsService} from '../../service/scanner-configs.service';
 import {ScannerConfig} from '../../model/scanner-configs.model';
 import {
@@ -17,7 +17,10 @@ import {
 } from '../scanner-configs-edit-dialog/scanner-configs-edit-dialog.component';
 import {Router} from '@angular/router';
 import {Location} from '@angular/common';
-import {interval} from "rxjs";
+import {timer} from "rxjs";
+import {
+  ScannerConfigsPreviewComponent
+} from "../scanner-configs-preview/scanner-configs-preview.component";
 
 export interface PeriodicElement {
   position: number;
@@ -44,6 +47,7 @@ export class ScannerConfigsComponent implements OnInit {
 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  private alive: boolean;
 
   constructor(private http: HttpClient,
               private dialog: MatDialog,
@@ -51,6 +55,7 @@ export class ScannerConfigsComponent implements OnInit {
               private router: Router,
               private location: Location,
               private service: ScannerConfigsService) {
+    this.alive = true;
   }
 
   ngOnInit(): void {
@@ -99,24 +104,19 @@ export class ScannerConfigsComponent implements OnInit {
       name: row.name,
       active: row.active,
     };
-    this.service.start(configs)
-    .pipe(switchMap(value => {
-      return interval(5000).pipe(switchMap(() => {
-        return this.service.checkStatus(configs);
-      }), tap((result: boolean) => {
-        row.isCompleted = result;
-        row.isStarted = !result;
-      }))
-    }))
-    .subscribe(
-      data => {
-        // this.refreshScannerConfigs();
-      }
-    );
+    this.service.start(configs).subscribe();
+    timer(0, 1000)
+    .pipe(takeWhile(() => this.alive), switchMap(() => {
+      return this.service.checkStatus(configs);
+    })).subscribe(response => {
+      row.isCompleted = response.string === "finish" || response.string === "crash" || response.string === "stop";
+      row.isStarted = response.string === "start";
+    })
   }
 
   stop(row: PeriodicElement): void {
     row.isStarted = false;
+    this.alive = false;
     const configs: ScannerConfig = {
       id: row?.id,
       url: row.url,
@@ -126,11 +126,7 @@ export class ScannerConfigsComponent implements OnInit {
     };
     this.service.stop(configs)
     .pipe(first())
-    .subscribe(
-      data => {
-        // this.refreshScannerConfigs();
-      }
-    );
+    .subscribe();
   }
 
   delete(row: PeriodicElement): void {
@@ -165,6 +161,10 @@ export class ScannerConfigsComponent implements OnInit {
       name: row.name,
       active: row.active
     };
+    this.dialog.open(ScannerConfigsPreviewComponent, {
+      disableClose: false,
+      data: {pageValue: configs}
+    })
   }
 
   edit(row: PeriodicElement): void {

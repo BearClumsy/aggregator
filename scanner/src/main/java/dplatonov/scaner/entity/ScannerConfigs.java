@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
-import org.hibernate.Hibernate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -64,15 +62,16 @@ public class ScannerConfigs {
     if (this == o) {
       return true;
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+    if (!(o instanceof ScannerConfigs)) {
       return false;
     }
     ScannerConfigs that = (ScannerConfigs) o;
-    return id != null && Objects.equals(id, that.id);
+    return id.equals(that.id) && name.equals(that.name) && url.equals(that.url) && active.equals(
+        that.active) && userId.equals(that.userId) && scannerSteps.equals(that.scannerSteps);
   }
 
   @Override
   public int hashCode() {
-    return getClass().hashCode();
+    return Objects.hash(id, name, url, active, userId, scannerSteps);
   }
 }
